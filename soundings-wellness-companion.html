@@ -225,7 +225,7 @@
     </div>
   </section>
 
-  <footer>Healing Souls Wellness Center · Portage Lakes, Ohio</footer>
+  <footer>Healing Souls Wellness Center · Akron, Ohio</footer>
 </div>
 
 <div class="book-bar">
@@ -244,6 +244,8 @@ let SERVICES = {};
 let CADENCE_DAYS = {};
 let QUESTIONS = [];
 let NUDGES = [];
+let PRESSURE_QUESTION = null;
+let ADD_ONS = {};
 let BOOKING_URL = 'https://www.healingsoulsmt.com';
 
 async function loadData(){
@@ -261,9 +263,11 @@ async function loadData(){
     QUESTIONS = data.questions;
     NUDGES = data.nudges;
     BOOKING_URL = data.bookingUrl || BOOKING_URL;
+    PRESSURE_QUESTION = data.pressureQuestion || null;
+    ADD_ONS = data.addOns || {};
     SERVICES = {}; CADENCE_DAYS = {};
     Object.entries(data.services).forEach(([key, s])=>{
-      SERVICES[key] = { label:s.label, cadence:s.cadence, therapist:s.therapist, blogUrl:s.blogUrl || '' };
+      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '' };
       CADENCE_DAYS[key] = s.cadenceDays;
     });
     document.querySelectorAll('a[href="https://www.healingsoulsmt.com"]').forEach(a=>{ a.href = BOOKING_URL; });
@@ -296,15 +300,27 @@ document.querySelectorAll('.tab').forEach(btn=>{
 });
 
 /* ============ QUIZ ============ */
+let askingPressure = false;
+
 function startQuiz(){
-  quizIndex = 0; scores = {}; answersLog = [];
+  quizIndex = 0; scores = {}; answersLog = []; askingPressure = false;
   if(QUESTIONS.length === 0) return; // data not loaded yet
   renderQuestion();
 }
 
 function renderQuestion(){
   const stage = document.getElementById('quiz-stage');
-  if(quizIndex >= QUESTIONS.length){ renderResult(); return; }
+  if(quizIndex >= QUESTIONS.length){
+    const ranked = topServices();
+    const topKey = ranked.length ? ranked[0][0] : null;
+    if(topKey === 'massage' && PRESSURE_QUESTION && !askingPressure){
+      askingPressure = true;
+      renderPressureQuestion();
+      return;
+    }
+    renderResult();
+    return;
+  }
   const q = QUESTIONS[quizIndex];
   const pct = Math.round((quizIndex/QUESTIONS.length)*100);
   stage.innerHTML = `
@@ -338,39 +354,84 @@ function topServices(){
   return entries;
 }
 
+let resolvedMassageKey = null;
+
+function renderPressureQuestion(){
+  const stage = document.getElementById('quiz-stage');
+  stage.innerHTML = `
+    <div class="q-progress">One more thing</div>
+    <div class="q-track"><div class="q-fill" style="width:90%"></div></div>
+    <div class="q-title">${PRESSURE_QUESTION.q}</div>
+    <div id="opts-wrap"></div>
+  `;
+  const optsWrap = document.getElementById('opts-wrap');
+  PRESSURE_QUESTION.opts.forEach(o=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = o.t;
+    b.addEventListener('click', ()=>{
+      resolvedMassageKey = Object.keys(o.w)[0];
+      answersLog.push({ q:PRESSURE_QUESTION.q, a:o.t });
+      renderResult();
+    });
+    optsWrap.appendChild(b);
+  });
+}
+
+function pickTherapist(serviceKey){
+  const list = (SERVICES[serviceKey] && SERVICES[serviceKey].therapists) || [];
+  if(list.length === 0) return null;
+  const chosenKey = list[Math.floor(Math.random() * list.length)];
+  return { key: chosenKey, therapist: THERAPISTS[chosenKey] };
+}
+
+function labelFor(key){
+  if(key === 'massage') return 'Massage Therapy';
+  return SERVICES[key] ? SERVICES[key].label : key;
+}
+
 function renderResult(){
   const stage = document.getElementById('quiz-stage');
   const ranked = topServices();
-  const primaryKey = ranked.length ? ranked[0][0] : 'massage';
-  const secondaryKey = ranked.length>1 && ranked[1][1] >= ranked[0][1]*0.6 ? ranked[1][0] : null;
+  let primaryKey = ranked.length ? ranked[0][0] : 'therapeutic';
+  if(primaryKey === 'massage'){
+    primaryKey = resolvedMassageKey || 'therapeutic';
+  }
+  const secondaryRaw = ranked.length>1 && ranked[1][1] >= ranked[0][1]*0.6 ? ranked[1][0] : null;
+  const secondaryKey = (secondaryRaw === 'massage') ? null : secondaryRaw; // avoid showing unresolved generic massage as secondary
+
   const svc = SERVICES[primaryKey];
-  const th = THERAPISTS[svc.therapist];
+  const pick = pickTherapist(primaryKey);
+  const th = pick ? pick.therapist : null;
+  const offersFootScrub = pick && ADD_ONS.footScrub && ADD_ONS.footScrub.therapists.includes(pick.key);
 
   stage.innerHTML = `
     <div class="card">
       <span class="result-badge">Based on what you shared</span>
       <div class="result-service">${svc.label}</div>
       <p>This sounds like the best place to start. It's not a diagnosis, just a nudge toward the service that fits what you told us.</p>
+      ${th ? `
       <div class="therapist-row">
         <div class="therapist-initial">${th.initial}</div>
         <div>
           <strong>Ask for ${th.name}</strong><br>
           <span style="color:var(--sage);font-size:13px;">${th.blurb}</span>
         </div>
-      </div>
+      </div>` : ''}
       <div class="cadence-line">Suggested rhythm: ${svc.cadence}</div>
-      <a class="btn-primary" href="${BOOKING_URL}" target="_blank" rel="noopener">Book ${svc.label} with ${th.name}</a>
+      ${offersFootScrub ? `<div class="cadence-line" style="margin-top:6px;">Ask about adding a Foot Scrub to your visit with ${th.name}.</div>` : ''}
+      <a class="btn-primary" href="${BOOKING_URL}" target="_blank" rel="noopener">Book ${svc.label}${th ? ` with ${th.name}` : ''}</a>
       ${svc.blogUrl ? `<a class="btn-secondary" style="display:block;text-decoration:none;" href="${svc.blogUrl}" target="_blank" rel="noopener">Learn more about ${svc.label}</a>` : ''}
-      ${th.email ? `<button class="btn-secondary" id="email-therapist-btn">Email this to ${th.name}</button>` : ''}
-      ${secondaryKey ? `<div class="secondary-note">Also worth a look: <strong style="color:var(--cream)">${SERVICES[secondaryKey].label}</strong> with ${THERAPISTS[SERVICES[secondaryKey].therapist].name}. You mentioned enough there that it's worth mentioning at your visit.</div>` : ''}
+      ${th && th.email ? `<button class="btn-secondary" id="email-therapist-btn">Email this to ${th.name}</button>` : ''}
+      ${secondaryKey ? `<div class="secondary-note">Also worth a look: <strong style="color:var(--cream)">${labelFor(secondaryKey)}</strong>. You mentioned enough there that it's worth mentioning at your visit.</div>` : ''}
       <button class="link-btn" id="retake-btn" style="margin-top:18px;">Retake the check-in</button>
     </div>
   `;
-  updateBookBar(svc.label, th.name);
+  if(th) updateBookBar(svc.label, th.name);
 
   document.getElementById('retake-btn').addEventListener('click', startQuiz);
   const emailBtn = document.getElementById('email-therapist-btn');
-  if(emailBtn){
+  if(emailBtn && th){
     emailBtn.addEventListener('click', ()=>{
       const subject = `Wellness check-in: ${svc.label} recommended`;
       let body = `Hi ${th.name},\n\nA client just took the Healing Souls wellness check-in and was pointed toward ${svc.label}.\n\nTheir answers:\n`;
@@ -379,7 +440,7 @@ function renderResult(){
       });
       body += `\n\nSuggested rhythm: ${svc.cadence}`;
       if(secondaryKey){
-        body += `\nAlso flagged: ${SERVICES[secondaryKey].label}`;
+        body += `\nAlso flagged: ${labelFor(secondaryKey)}`;
       }
       body += `\n\n(Sent from the Soundings check-in on the website. The client will book separately.)`;
       window.location.href = `mailto:${th.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

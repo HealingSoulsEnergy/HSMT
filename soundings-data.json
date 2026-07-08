@@ -2,19 +2,26 @@
   "bookingUrl": "https://www.healingsoulsmt.com",
 
   "therapists": {
-    "ken":     { "name": "Ken",     "initial": "K", "email": "", "blurb": "massage, Reiki & reflexology" },
-    "juliann": { "name": "Juliann", "initial": "J", "email": "", "blurb": "Bowen therapy, massage & Reiki" },
-    "amanda":  { "name": "Amanda",  "initial": "A", "email": "", "blurb": "massage, manual lymphatic drainage & Reiki" },
+    "ken":     { "name": "Ken",     "initial": "K", "email": "", "blurb": "Therapeutic Massage, Deep Tissue, Prenatal, Manual Lymphatic Drainage, Reiki & Reflexology" },
+    "juliann": { "name": "Juliann", "initial": "J", "email": "", "blurb": "Therapeutic Massage, Deep Tissue, Prenatal, Manual Lymphatic Drainage, Bowen Therapy & Reiki" },
+    "amanda":  { "name": "Amanda",  "initial": "A", "email": "", "blurb": "Therapeutic Massage, Deep Tissue, Prenatal, Manual Lymphatic Drainage & Reiki" },
+    "stacie":  { "name": "Stacie",  "initial": "S", "email": "", "blurb": "Therapeutic Massage, Deep Tissue, Prenatal & Foot Scrubs" },
     "alex":    { "name": "Alex",    "initial": "A", "email": "", "blurb": "facials & skincare, Pevonia partner" }
   },
 
   "services": {
-    "massage":     { "label": "Massage Therapy",          "cadence": "every 4 to 6 weeks",                                       "cadenceDays": 35, "therapist": "ken",     "blogUrl": "" },
-    "lymphatic":   { "label": "Manual Lymphatic Drainage", "cadence": "a short series close together, then monthly to maintain it","cadenceDays": 28, "therapist": "amanda",  "blogUrl": "" },
-    "reiki":       { "label": "Reiki",                     "cadence": "every 4 to 6 weeks, or whenever things feel like too much", "cadenceDays": 35, "therapist": "ken",     "blogUrl": "" },
-    "reflexology": { "label": "Reflexology",               "cadence": "every 3 to 4 weeks",                                       "cadenceDays": 24, "therapist": "ken",     "blogUrl": "" },
-    "bowen":       { "label": "Bowen Therapy",             "cadence": "a short series about a week apart, then as needed",        "cadenceDays": 14, "therapist": "juliann", "blogUrl": "" },
-    "facial":      { "label": "Facial & Skincare",         "cadence": "every 4 weeks, with your skin's natural renewal cycle",    "cadenceDays": 28, "therapist": "alex",    "blogUrl": "" }
+    "therapeutic": { "label": "Therapeutic Massage",  "cadence": "every 4 to 6 weeks",                                       "cadenceDays": 35, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "" },
+    "deep_tissue":  { "label": "Deep Tissue Massage",  "cadence": "every 3 to 5 weeks, especially while working through chronic tension", "cadenceDays": 28, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "" },
+    "prenatal":     { "label": "Prenatal Massage",     "cadence": "every 3 to 4 weeks throughout pregnancy, adjusted with your provider's guidance", "cadenceDays": 24, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "" },
+    "lymphatic":    { "label": "Manual Lymphatic Drainage", "cadence": "a short series close together, then monthly to maintain it", "cadenceDays": 28, "therapists": ["ken","juliann","amanda"], "blogUrl": "" },
+    "reiki":        { "label": "Reiki",                "cadence": "every 4 to 6 weeks, or whenever things feel like too much", "cadenceDays": 35, "therapists": ["ken","juliann","amanda"], "blogUrl": "" },
+    "reflexology":  { "label": "Reflexology",          "cadence": "every 3 to 4 weeks",                                       "cadenceDays": 24, "therapists": ["ken"], "blogUrl": "" },
+    "bowen":        { "label": "Bowen Therapy",        "cadence": "a short series about a week apart, then as needed",        "cadenceDays": 14, "therapists": ["juliann"], "blogUrl": "" },
+    "facial":       { "label": "Facial & Skincare",    "cadence": "every 4 weeks, with your skin's natural renewal cycle",    "cadenceDays": 28, "therapists": ["alex"], "blogUrl": "" }
+  },
+
+  "addOns": {
+    "footScrub": { "label": "Foot Scrub", "therapists": ["stacie"] }
   },
 
   "questions": [
@@ -48,8 +55,12 @@
     {
       "q": "Is there a specific area that feels stuck or out of alignment?",
       "opts": [
-        { "t": "Yes, one spot keeps coming back", "w": { "bowen": 2, "massage": 1 } },
-        { "t": "My feet or lower legs ache", "w": { "reflexology": 2 } },
+        { "t": "Neck and shoulders", "w": { "massage": 2, "bowen": 1 } },
+        { "t": "Low back or hips", "w": { "massage": 2, "bowen": 1 } },
+        { "t": "Feet or lower legs", "w": { "reflexology": 2 } },
+        { "t": "Hands, wrists, or arms", "w": { "massage": 2 } },
+        { "t": "Jaw or head", "w": { "reiki": 1, "massage": 1 } },
+        { "t": "One recurring spot that keeps coming back", "w": { "bowen": 2, "massage": 1 } },
         { "t": "Not really, it's more overall tension", "w": { "massage": 2 } },
         { "t": "No", "w": {} }
       ]
@@ -64,6 +75,16 @@
       ]
     }
   ],
+
+  "pressureQuestion": {
+    "q": "What kind of pressure are you looking for?",
+    "opts": [
+      { "t": "Light and relaxing", "w": { "therapeutic": 1 } },
+      { "t": "Firm, I want the knots worked out", "w": { "deep_tissue": 1 } },
+      { "t": "I'm currently pregnant and need pregnancy-safe massage", "w": { "prenatal": 1 } },
+      { "t": "Not sure, whatever feels right", "w": { "therapeutic": 1 } }
+    ]
+  },
 
   "nudges": [
     "Take five slow breaths, in for a count of four, out for a count of six.",
