@@ -188,9 +188,52 @@
   }
 
   footer{text-align:center;padding:30px 20px 10px;color:var(--sage-dim);font-size:12px;}
+
+  /* ---------- SIDE RAILS (arcade cabinet side-art) ---------- */
+  .side-rail{
+    position:fixed;top:0;bottom:0;width:230px;overflow-y:auto;
+    padding:0 0 40px;box-sizing:border-box;
+    background:
+      repeating-linear-gradient(135deg, var(--bg-alt) 0px, var(--bg-alt) 10px, var(--bg) 10px, var(--bg) 20px);
+    z-index:5;
+  }
+  .side-rail::-webkit-scrollbar{width:0;}
+  .side-rail.left{left:0;border-right:2px solid var(--clay);}
+  .side-rail.right{right:0;border-left:2px solid var(--clay);}
+  .rail-inner{
+    background:var(--bg);margin:0;min-height:100%;
+    padding:28px 18px 40px;
+  }
+  .side-rail.left .rail-inner{margin-right:6px;border-right:1px solid var(--card-line);}
+  .side-rail.right .rail-inner{margin-left:6px;border-left:1px solid var(--card-line);}
+  .rail-marquee{
+    text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.3em;
+    text-transform:uppercase;color:var(--clay-bright);padding-bottom:16px;margin-bottom:20px;
+    border-bottom:1px dashed var(--card-line);
+  }
+  .rail-card{margin-bottom:22px;}
+  .rail-card h4{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:16px;color:var(--cream);
+    margin-bottom:6px;line-height:1.2;
+  }
+  .rail-card p{
+    font-size:12.5px;color:var(--sand);line-height:1.5;margin:0;
+  }
+  .rail-divider{
+    height:1px;background:repeating-linear-gradient(90deg, var(--sage-dim) 0, var(--sage-dim) 4px, transparent 4px, transparent 8px);
+    margin:18px 0;
+  }
+  @media (max-width: 1180px){ .side-rail{display:none;} }
 </style>
 </head>
 <body>
+
+<aside class="side-rail left" id="side-rail-left">
+  <div class="rail-inner">
+    <div class="rail-marquee">Modalities</div>
+    <div id="rail-left-content"></div>
+  </div>
+</aside>
 
 <div class="wrap">
   <div class="hero">
@@ -236,6 +279,13 @@
   <a href="https://www.healingsoulsmt.com" target="_blank" rel="noopener" id="book-bar-btn">Book Now</a>
 </div>
 
+<aside class="side-rail right" id="side-rail-right">
+  <div class="rail-inner">
+    <div class="rail-marquee">Modalities</div>
+    <div id="rail-right-content"></div>
+  </div>
+</aside>
+
 <script>
 /* ============ DATA (loaded live from soundings-data.json) ============ */
 const DATA_URL = 'soundings-data.json';
@@ -271,7 +321,7 @@ async function loadData(){
     ADD_ONS = data.addOns || {};
     SERVICES = {}; CADENCE_DAYS = {};
     Object.entries(data.services).forEach(([key, s])=>{
-      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '', bookingUrl:s.bookingUrl || '', therapistBookingUrls: s.therapistBookingUrls || {} };
+      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '', bookingUrl:s.bookingUrl || '', therapistBookingUrls: s.therapistBookingUrls || {}, description: s.description || '' };
       CADENCE_DAYS[key] = s.cadenceDays;
     });
     document.querySelectorAll('a[href="https://www.healingsoulsmt.com"]').forEach(a=>{ a.href = BOOKING_URL; });
@@ -436,10 +486,14 @@ function labelFor(key){
 const MASSAGE_KEYS = ['therapeutic','deep_tissue','sports','prenatal'];
 
 function suggestedDuration(score){
-  // Simple first-pass heuristic: more weighted answers pointing the same
-  // direction suggests more ground to cover. Tune the threshold as you learn
-  // what actually matches client feedback.
-  return score >= 6 ? '120 minutes' : '90 minutes';
+  // Calibrated against real playthroughs: scores for a winning massage-type
+  // category typically range from about 2 (one mild signal) to 8-9 (strong,
+  // repeated signals across several questions). Revisit these cutoffs if
+  // client feedback suggests they're still skewed.
+  if(score <= 2) return '30 minutes';
+  if(score <= 4) return '60 minutes';
+  if(score <= 6) return '90 minutes';
+  return '120 minutes';
 }
 
 function renderResult(){
@@ -538,6 +592,20 @@ function renderNudge(){
   document.getElementById('nudge-text').textContent = nudge;
 }
 
+function renderSideRails(){
+  const leftEl = document.getElementById('rail-left-content');
+  const rightEl = document.getElementById('rail-right-content');
+  if(!leftEl || !rightEl) return;
+  const entries = Object.entries(SERVICES).filter(([,s])=>s.description);
+  let leftHtml = '', rightHtml = '';
+  entries.forEach(([key, s], i)=>{
+    const card = `<div class="rail-card"><h4>${s.label}</h4><p>${s.description}</p></div>${i < entries.length-1 ? '<div class="rail-divider"></div>' : ''}`;
+    if(i % 2 === 0) leftHtml += card; else rightHtml += card;
+  });
+  leftEl.innerHTML = leftHtml;
+  rightEl.innerHTML = rightHtml;
+}
+
 /* ============ INIT ============ */
 (async function init(){
   const ok = await loadData();
@@ -546,6 +614,7 @@ function renderNudge(){
       document.getElementById('book-bar-btn').href = BOOKING_URL;
       startQuiz();
       renderNudge();
+      renderSideRails();
     }catch(err){
       document.getElementById('quiz-stage').innerHTML = `<div class="card"><p>Something went wrong setting up the check-in: ${err.message}. Try refreshing the page.</p></div>`;
       console.error('Soundings init failed:', err);
