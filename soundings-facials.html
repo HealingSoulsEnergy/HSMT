@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16302B">
+<title>Facials — Healing Souls Wellness Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#132824; --bg-alt:#1B3A33; --card:#20443B; --card-line:rgba(143,174,150,0.22);
+    --cream:#F7F2E7; --sand:#EDE4D3; --sage:#8FAE96; --sage-dim:#5E7C67;
+    --clay:#C17A56; --clay-bright:#D48D67;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:84px;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0;color:var(--cream);}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage);}
+
+  .hero{padding:48px 0 28px;text-align:center;}
+  .hero h1{font-size:clamp(30px,7vw,40px);line-height:1.08;}
+  .hero h1 em{font-style:italic;color:var(--clay-bright);}
+  .hero p{max-width:420px;margin:14px auto 0;color:var(--sand);font-size:15.5px;line-height:1.55;}
+
+  /* comparison table */
+  .compare{display:flex;flex-direction:column;gap:14px;margin:28px 0;}
+  @media (min-width:520px){ .compare{flex-direction:row;} }
+  .opt-card{
+    flex:1;background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:22px;position:relative;
+  }
+  .opt-card.recommended{border-color:var(--clay);box-shadow:0 0 0 1px var(--clay);}
+  .rec-flag{
+    position:absolute;top:-11px;left:20px;background:var(--clay);color:var(--bg);
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+    padding:4px 10px;border-radius:20px;font-weight:700;
+  }
+  .opt-price{font-family:'Fraunces',serif;font-size:34px;margin:6px 0 2px;}
+  .opt-name{font-size:17px;margin-bottom:2px;}
+  .opt-tagline{color:var(--sage);font-size:13px;margin-bottom:16px;}
+  .steps{list-style:none;margin:0;padding:0;}
+  .steps li{
+    font-size:13.5px;color:var(--sand);padding:7px 0 7px 20px;position:relative;border-top:1px solid var(--card-line);
+  }
+  .steps li:first-child{border-top:none;}
+  .steps li::before{content:'—';position:absolute;left:0;color:var(--sage-dim);}
+  .best-for{font-size:13px;color:var(--sand);line-height:1.5;margin-top:14px;padding-top:14px;border-top:1px solid var(--card-line);}
+
+  /* tabs */
+  .tabs{display:flex;gap:8px;justify-content:center;margin:8px 0 4px;border-bottom:1px solid var(--card-line);}
+  .tab{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;
+    background:none;border:none;color:var(--sage);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;
+  }
+  .tab.active{color:var(--cream);border-bottom-color:var(--clay);}
+  section.panel{display:none;padding:24px 0 8px;}
+  section.panel.active{display:block;}
+
+  /* quiz */
+  .card{background:var(--card);border:1px solid var(--card-line);border-radius:14px;padding:22px;margin-bottom:16px;}
+  .card p{color:var(--sand);font-size:14.5px;line-height:1.6;margin:0;}
+  .q-progress{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--sage);margin-bottom:10px;}
+  .q-track{height:3px;background:var(--card-line);border-radius:2px;margin-bottom:22px;overflow:hidden;}
+  .q-fill{height:100%;background:var(--clay);transition:width 0.4s ease;}
+  .q-title{font-size:20px;margin-bottom:18px;line-height:1.3;}
+  .opt{
+    display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--card-line);color:var(--cream);
+    padding:16px 18px;border-radius:12px;margin-bottom:10px;font-size:15px;font-family:'Karla',sans-serif;cursor:pointer;
+  }
+  .opt:hover{border-color:var(--clay);background:var(--bg-alt);}
+  .link-btn{background:none;border:none;color:var(--sage);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;padding:8px 0;}
+
+  .result-badge{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--clay-bright);margin-bottom:6px;display:block;}
+  .result-service{font-size:28px;margin-bottom:6px;}
+  .btn-primary{
+    display:block;width:100%;text-align:center;background:var(--clay);color:var(--bg);font-weight:700;font-size:15px;
+    padding:15px;border-radius:12px;text-decoration:none;margin-top:16px;border:none;cursor:pointer;font-family:'Karla',sans-serif;
+  }
+  .btn-secondary{
+    display:block;width:100%;text-align:center;background:transparent;color:var(--cream);border:1px solid var(--card-line);
+    font-weight:500;font-size:14px;padding:14px;border-radius:12px;margin-top:10px;cursor:pointer;font-family:'Karla',sans-serif;
+    text-decoration:none;
+  }
+
+  .book-bar{
+    position:fixed;bottom:0;left:0;right:0;background:rgba(19,40,36,0.92);backdrop-filter:blur(8px);
+    border-top:1px solid var(--card-line);padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:12px;z-index:50;
+  }
+  .book-bar-text{flex:1;font-size:13px;color:var(--sand);}
+  .book-bar-text strong{display:block;color:var(--cream);font-size:14.5px;}
+  .book-bar a{background:var(--clay);color:var(--bg);text-decoration:none;font-weight:700;font-size:14px;padding:11px 18px;border-radius:10px;font-family:'Karla',sans-serif;white-space:nowrap;}
+  footer{text-align:center;padding:30px 20px 10px;color:var(--sage-dim);font-size:12px;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="eyebrow">Skincare with Alex</span>
+    <h1>Basic, or <em>customized?</em></h1>
+    <p>Both facials at Healing Souls start the same way. Here's how they're different, and a quick way to see which one fits what your skin needs right now.</p>
+  </div>
+
+  <div id="compare-wrap"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="quiz">Not Sure? Take the Quiz</button>
+  </div>
+
+  <section class="panel active" id="panel-quiz">
+    <div id="quiz-stage"></div>
+  </section>
+
+  <footer>Healing Souls Wellness Center · Portage Lakes, Ohio</footer>
+</div>
+
+<div class="book-bar">
+  <div class="book-bar-text">
+    <strong id="book-bar-headline">Ready for a facial?</strong>
+    <span id="book-bar-sub">Basic $90 · Customized $125, with Alex</span>
+  </div>
+  <a href="https://www.healingsoulsmt.com" target="_blank" rel="noopener" id="book-bar-btn">Book Now</a>
+</div>
+
+<script>
+const DATA_URL = 'soundings-data.json';
+let FACIALS = {};
+let FACIAL_QUIZ = [];
+let ALEX = { name:'Alex', email:'' };
+let BOOKING_URL = 'https://www.healingsoulsmt.com';
+
+async function loadData(){
+  const stage = document.getElementById('quiz-stage');
+  stage.innerHTML = '<div class="card"><p>Loading&hellip;</p></div>';
+  const attemptedUrl = new URL(DATA_URL, window.location.href).href;
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 8000);
+  try{
+    const res = await fetch(DATA_URL, {cache:'no-store', signal: controller.signal});
+    clearTimeout(timeout);
+    if(!res.ok) throw new Error(`Got a ${res.status} response fetching ${attemptedUrl}. Make sure soundings-data.json is uploaded in the exact same folder as this HTML file, with that exact filename.`);
+    const data = await res.json();
+    FACIALS = data.facials || {};
+    FACIAL_QUIZ = data.facialQuiz || [];
+    BOOKING_URL = data.bookingUrl || BOOKING_URL;
+    if(data.therapists && data.therapists.alex) ALEX = data.therapists.alex;
+    document.querySelectorAll('a[href="https://www.healingsoulsmt.com"]').forEach(a=>{ a.href = BOOKING_URL; });
+    return true;
+  }catch(err){
+    clearTimeout(timeout);
+    const msg = err.name === 'AbortError'
+      ? `The data file took too long to load from ${attemptedUrl}. Check that this page and soundings-data.json are both live at that address.`
+      : (err.message || 'This page could not load its data.');
+    stage.innerHTML = `<div class="card"><p>${msg}</p><p style="margin-top:10px;">If you're opening this file directly from your computer rather than from a live website address, that's expected, browsers block this kind of file loading unless it's served over http or https.</p></div>`;
+    console.error('Facials data load failed:', err);
+    return false;
+  }
+}
+
+function renderCompare(recommendedKey){
+  const wrap = document.getElementById('compare-wrap');
+  const order = ['basic','customized'];
+  wrap.innerHTML = `<div class="compare">${order.map(key=>{
+    const f = FACIALS[key];
+    if(!f) return '';
+    const isRec = key === recommendedKey;
+    return `
+      <div class="opt-card ${isRec ? 'recommended':''}">
+        ${isRec ? '<span class="rec-flag">Suggested for you</span>' : ''}
+        <div class="opt-name">${f.name}</div>
+        <div class="opt-tagline">${f.tagline}</div>
+        <div class="opt-price">${f.price}</div>
+        <ul class="steps">${f.steps.map(s=>`<li>${s}</li>`).join('')}</ul>
+        <div class="best-for">${f.bestFor}</div>
+      </div>
+    `;
+  }).join('')}</div>`;
+}
+
+/* ============ QUIZ ============ */
+let quizIndex = 0;
+let scores = {};
+
+function startQuiz(){
+  quizIndex = 0; scores = {};
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const stage = document.getElementById('quiz-stage');
+  if(quizIndex >= FACIAL_QUIZ.length){ renderResult(); return; }
+  const q = FACIAL_QUIZ[quizIndex];
+  const pct = Math.round((quizIndex/FACIAL_QUIZ.length)*100);
+  stage.innerHTML = `
+    <div class="q-progress">Question ${quizIndex+1} of ${FACIAL_QUIZ.length}</div>
+    <div class="q-track"><div class="q-fill" style="width:${pct}%"></div></div>
+    <div class="q-title">${q.q}</div>
+    <div id="opts-wrap"></div>
+    ${quizIndex>0 ? '<button class="link-btn" id="q-back">Back</button>' : ''}
+  `;
+  const optsWrap = document.getElementById('opts-wrap');
+  q.opts.forEach(o=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = o.t;
+    b.addEventListener('click', ()=>{
+      Object.entries(o.w).forEach(([k,v])=>{ scores[k] = (scores[k]||0) + v; });
+      quizIndex++;
+      renderQuestion();
+    });
+    optsWrap.appendChild(b);
+  });
+  const backBtn = document.getElementById('q-back');
+  if(backBtn) backBtn.addEventListener('click', ()=>{ quizIndex = Math.max(0, quizIndex-1); renderQuestion(); });
+}
+
+function renderResult(){
+  const stage = document.getElementById('quiz-stage');
+  const basicScore = scores.basic || 0;
+  const customScore = scores.customized || 0;
+  const recKey = customScore >= basicScore ? 'customized' : 'basic';
+  const f = FACIALS[recKey];
+
+  renderCompare(recKey);
+
+  stage.innerHTML = `
+    <div class="card">
+      <span class="result-badge">Based on what you shared</span>
+      <div class="result-service">${f.name} — ${f.price}</div>
+      <p>${f.bestFor}</p>
+      <a class="btn-primary" href="${BOOKING_URL}" target="_blank" rel="noopener">Book the ${f.name} with Alex</a>
+      ${ALEX.email ? `<button class="btn-secondary" id="email-alex-btn">Email Alex about this</button>` : ''}
+      <button class="link-btn" id="retake-btn" style="margin-top:16px;">Retake the quiz</button>
+    </div>
+  `;
+  document.getElementById('book-bar-headline').textContent = `Book the ${f.name}`;
+  document.getElementById('book-bar-sub').textContent = `${f.price} with Alex`;
+
+  document.getElementById('retake-btn').addEventListener('click', startQuiz);
+  const emailBtn = document.getElementById('email-alex-btn');
+  if(emailBtn){
+    emailBtn.addEventListener('click', ()=>{
+      const subject = `Facial recommendation: ${f.name}`;
+      const body = `Hi Alex,\n\nA client took the facial comparison quiz on the website and was pointed toward the ${f.name} (${f.price}).\n\n(Sent from the Healing Souls website. The client will book separately.)`;
+      window.location.href = `mailto:${ALEX.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  }
+}
+
+/* ============ INIT ============ */
+(async function init(){
+  const ok = await loadData();
+  if(ok){
+    try{
+      document.getElementById('book-bar-btn').href = BOOKING_URL;
+      renderCompare(null);
+      startQuiz();
+    }catch(err){
+      document.getElementById('quiz-stage').innerHTML = `<div class="card"><p>Something went wrong setting up the quiz: ${err.message}. Try refreshing the page.</p></div>`;
+      console.error('Facials init failed:', err);
+    }
+  }
+})();
+</script>
+</body>
+</html>

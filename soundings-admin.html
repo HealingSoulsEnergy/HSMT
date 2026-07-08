@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundings — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#132824; --card:#20443B; --line:rgba(143,174,150,0.25);
+    --cream:#F7F2E7; --sand:#EDE4D3; --sage:#8FAE96; --clay:#C17A56; --danger:#C15A56;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--cream);font-family:'Karla',sans-serif;margin:0;padding:24px 16px 80px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-family:'Fraunces',serif;font-size:26px;margin:0 0 4px;}
+  h2{font-family:'Fraunces',serif;font-size:19px;margin:32px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px;}
+  .subtitle{color:var(--sage);font-size:13px;margin-bottom:24px;}
+  .warn{
+    background:rgba(193,90,86,0.12);border:1px solid rgba(193,90,86,0.4);
+    padding:12px 14px;border-radius:10px;font-size:13px;color:var(--sand);margin-bottom:20px;line-height:1.5;
+  }
+  label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--sage);margin:12px 0 5px;}
+  input, select, textarea{
+    width:100%;background:var(--card);border:1px solid var(--line);color:var(--cream);
+    padding:10px 12px;border-radius:8px;font-family:'Karla',sans-serif;font-size:14px;
+  }
+  input:focus, select:focus, textarea:focus{outline:1px solid var(--clay);}
+  .row{display:flex;gap:10px;}
+  .row > div{flex:1;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;position:relative;}
+  .card .del{
+    position:absolute;top:12px;right:12px;background:none;border:none;color:var(--danger);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;text-transform:uppercase;
+  }
+  button.primary{
+    background:var(--clay);color:var(--bg);border:none;font-weight:700;padding:13px 20px;
+    border-radius:10px;font-size:14px;cursor:pointer;
+  }
+  button.secondary{
+    background:transparent;border:1px solid var(--line);color:var(--cream);padding:11px 18px;
+    border-radius:10px;font-size:13px;cursor:pointer;
+  }
+  .actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  #status{font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:16px;min-height:20px;}
+  #status.ok{color:var(--sage);}
+  #status.err{color:var(--danger);}
+  #editor{display:none;}
+  .hint{font-size:12px;color:var(--sage);margin-top:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Soundings Admin</h1>
+  <div class="subtitle">Edit employees, talents, and services. Saving here commits straight to the live data file.</div>
+
+  <div class="warn">
+    This page needs a GitHub personal access token with read/write access to the repo holding soundings-data.json. Generate a fine-grained token scoped to just that one repo (Settings → Developer settings → Personal access tokens on GitHub), and don't share this page or leave it open on a shared computer. The token is only kept in this browser tab's memory, it's never saved anywhere.
+  </div>
+
+  <div id="connect">
+    <label>GitHub username or org</label>
+    <input id="owner" placeholder="e.g. healingsoulsenergy">
+    <label>Repository name</label>
+    <input id="repo" placeholder="e.g. soundings">
+    <label>Branch</label>
+    <input id="branch" value="main">
+    <label>Path to data file</label>
+    <input id="path" value="soundings-data.json">
+    <label>Personal access token</label>
+    <input id="token" type="password" placeholder="github_pat_...">
+    <div class="actions">
+      <button class="primary" id="loadBtn">Load current data</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <div id="editor">
+    <h2>Booking link</h2>
+    <input id="bookingUrl">
+
+    <h2>Employees</h2>
+    <div id="therapistList"></div>
+    <button class="secondary" id="addTherapist">+ Add employee</button>
+
+    <h2>Services &amp; talents</h2>
+    <div id="serviceList"></div>
+    <button class="secondary" id="addService">+ Add service</button>
+
+    <h2>Save</h2>
+    <label>Commit message</label>
+    <input id="commitMsg" value="Update Soundings data via admin panel">
+    <div class="actions">
+      <button class="primary" id="saveBtn">Save to live site</button>
+    </div>
+    <div id="saveStatus"></div>
+  </div>
+</div>
+
+<script>
+let currentData = null;
+let currentSha = null;
+
+function apiBase(){
+  const owner = document.getElementById('owner').value.trim();
+  const repo = document.getElementById('repo').value.trim();
+  const path = document.getElementById('path').value.trim();
+  return `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+}
+function branch(){ return document.getElementById('branch').value.trim() || 'main'; }
+function token(){ return document.getElementById('token').value.trim(); }
+
+function b64ToUtf8(b64){ return decodeURIComponent(escape(atob(b64))); }
+function utf8ToB64(str){ return btoa(unescape(encodeURIComponent(str))); }
+
+document.getElementById('loadBtn').addEventListener('click', async ()=>{
+  const status = document.getElementById('status');
+  status.textContent = 'Loading…'; status.className='';
+  try{
+    const res = await fetch(`${apiBase()}?ref=${branch()}`, {
+      headers: { 'Authorization': `Bearer ${token()}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if(!res.ok) throw new Error(`GitHub returned ${res.status}. Check owner/repo/path/token and that the token has access to this repo.`);
+    const json = await res.json();
+    currentSha = json.sha;
+    currentData = JSON.parse(b64ToUtf8(json.content));
+    renderEditor();
+    status.textContent = 'Loaded. Edit below, then save.'; status.className='ok';
+    document.getElementById('editor').style.display = 'block';
+  }catch(err){
+    status.textContent = err.message; status.className='err';
+  }
+});
+
+function renderEditor(){
+  document.getElementById('bookingUrl').value = currentData.bookingUrl || '';
+  renderTherapists();
+  renderServices();
+}
+
+function renderTherapists(){
+  const wrap = document.getElementById('therapistList');
+  wrap.innerHTML = '';
+  Object.entries(currentData.therapists).forEach(([key, t])=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.key = key;
+    card.innerHTML = `
+      <button class="del" data-action="del-therapist">Remove</button>
+      <label>Key (used internally, lowercase, no spaces)</label>
+      <input class="t-key" value="${key}">
+      <div class="row">
+        <div><label>Name</label><input class="t-name" value="${t.name||''}"></div>
+        <div><label>Initial shown in app</label><input class="t-initial" value="${t.initial||''}" maxlength="2"></div>
+      </div>
+      <label>Email (for the "email this to therapist" button)</label>
+      <input class="t-email" value="${t.email||''}" placeholder="name@healingsoulsmt.com">
+      <label>Talents / blurb</label>
+      <input class="t-blurb" value="${t.blurb||''}" placeholder="e.g. massage, Reiki & reflexology">
+    `;
+    card.querySelector('[data-action="del-therapist"]').addEventListener('click', ()=>{
+      if(confirm(`Remove ${t.name}? Any services pointing to them will need reassigning.`)){
+        card.remove();
+      }
+    });
+    wrap.appendChild(card);
+  });
+}
+
+function renderServices(){
+  const wrap = document.getElementById('serviceList');
+  wrap.innerHTML = '';
+  Object.entries(currentData.services).forEach(([key, s])=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.key = key;
+    card.innerHTML = `
+      <button class="del" data-action="del-service">Remove</button>
+      <label>Key (used internally, lowercase, no spaces)</label>
+      <input class="s-key" value="${key}">
+      <label>Service name shown to clients</label>
+      <input class="s-label" value="${s.label||''}">
+      <div class="row">
+        <div><label>Cadence text (shown to client)</label><input class="s-cadence" value="${s.cadence||''}"></div>
+        <div><label>Cadence in days (for due-date math)</label><input class="s-cadenceDays" type="number" value="${s.cadenceDays||28}"></div>
+      </div>
+      <label>Assigned employee</label>
+      <select class="s-therapist"></select>
+      <label>Blog link ("learn more" button, optional)</label>
+      <input class="s-blogUrl" value="${s.blogUrl||''}" placeholder="https://www.healingsoulsmt.com/blog/...">
+    `;
+    const sel = card.querySelector('.s-therapist');
+    Object.entries(currentData.therapists).forEach(([tKey, t])=>{
+      const opt = document.createElement('option');
+      opt.value = tKey; opt.textContent = t.name;
+      if(tKey === s.therapist) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    card.querySelector('[data-action="del-service"]').addEventListener('click', ()=>{
+      if(confirm(`Remove ${s.label}? This also removes it from the check-in quiz scoring for anyone using old cached data until they refresh.`)){
+        card.remove();
+      }
+    });
+    wrap.appendChild(card);
+  });
+}
+
+document.getElementById('addTherapist').addEventListener('click', ()=>{
+  const key = prompt('Short key for this employee (lowercase, no spaces), e.g. "sara":');
+  if(!key) return;
+  currentData.therapists[key] = { name:'', initial:'', email:'', blurb:'' };
+  renderTherapists();
+  renderServices(); // refresh dropdowns
+});
+
+document.getElementById('addService').addEventListener('click', ()=>{
+  const key = prompt('Short key for this service (lowercase, no spaces), e.g. "cupping":');
+  if(!key) return;
+  const firstTherapist = Object.keys(currentData.therapists)[0] || '';
+  currentData.services[key] = { label:'', cadence:'', cadenceDays:28, therapist:firstTherapist, blogUrl:'' };
+  renderServices();
+});
+
+function collectFromForm(){
+  const therapists = {};
+  document.querySelectorAll('#therapistList .card').forEach(card=>{
+    const key = card.querySelector('.t-key').value.trim();
+    if(!key) return;
+    therapists[key] = {
+      name: card.querySelector('.t-name').value.trim(),
+      initial: card.querySelector('.t-initial').value.trim(),
+      email: card.querySelector('.t-email').value.trim(),
+      blurb: card.querySelector('.t-blurb').value.trim()
+    };
+  });
+  const services = {};
+  document.querySelectorAll('#serviceList .card').forEach(card=>{
+    const key = card.querySelector('.s-key').value.trim();
+    if(!key) return;
+    services[key] = {
+      label: card.querySelector('.s-label').value.trim(),
+      cadence: card.querySelector('.s-cadence').value.trim(),
+      cadenceDays: parseInt(card.querySelector('.s-cadenceDays').value, 10) || 28,
+      therapist: card.querySelector('.s-therapist').value,
+      blogUrl: card.querySelector('.s-blogUrl').value.trim()
+    };
+  });
+  return {
+    bookingUrl: document.getElementById('bookingUrl').value.trim(),
+    therapists,
+    services,
+    questions: currentData.questions,
+    nudges: currentData.nudges
+  };
+}
+
+document.getElementById('saveBtn').addEventListener('click', async ()=>{
+  const status = document.getElementById('saveStatus');
+  status.textContent = 'Saving…'; status.className='';
+  try{
+    const updated = collectFromForm();
+    const body = {
+      message: document.getElementById('commitMsg').value.trim() || 'Update Soundings data',
+      content: utf8ToB64(JSON.stringify(updated, null, 2)),
+      sha: currentSha,
+      branch: branch()
+    };
+    const res = await fetch(apiBase(), {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token()}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const errJson = await res.json().catch(()=>({}));
+      throw new Error(`Save failed (${res.status}): ${errJson.message || 'check your token permissions'}`);
+    }
+    const resJson = await res.json();
+    currentSha = resJson.content.sha;
+    currentData = updated;
+    status.textContent = 'Saved. The live app will reflect this the next time someone loads it.';
+    status.className = 'ok';
+  }catch(err){
+    status.textContent = err.message; status.className='err';
+  }
+});
+</script>
+</body>
+</html>
