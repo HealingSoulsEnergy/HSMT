@@ -245,6 +245,8 @@ let CADENCE_DAYS = {};
 let QUESTIONS = [];
 let NUDGES = [];
 let PRESSURE_QUESTION = null;
+let LIGHTER_QUESTION = null;
+let SKIN_QUESTIONS = [];
 let ADD_ONS = {};
 let BOOKING_URL = 'https://www.healingsoulsmt.com';
 
@@ -264,10 +266,12 @@ async function loadData(){
     NUDGES = data.nudges;
     BOOKING_URL = data.bookingUrl || BOOKING_URL;
     PRESSURE_QUESTION = data.pressureQuestion || null;
+    LIGHTER_QUESTION = data.lighterQuestion || null;
+    SKIN_QUESTIONS = data.skinQuestions || [];
     ADD_ONS = data.addOns || {};
     SERVICES = {}; CADENCE_DAYS = {};
     Object.entries(data.services).forEach(([key, s])=>{
-      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '' };
+      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '', bookingUrl:s.bookingUrl || '', therapistBookingUrls: s.therapistBookingUrls || {} };
       CADENCE_DAYS[key] = s.cadenceDays;
     });
     document.querySelectorAll('a[href="https://www.healingsoulsmt.com"]').forEach(a=>{ a.href = BOOKING_URL; });
@@ -301,9 +305,16 @@ document.querySelectorAll('.tab').forEach(btn=>{
 
 /* ============ QUIZ ============ */
 let askingPressure = false;
+let askingLighter = false;
+let skinStep = -1; // -1 = not in skin branch, 0/1 = which skin sub-question
+let resolvedMassageKey = null;
+let resolvedLighterKey = null;
+let skinTags = [];
 
 function startQuiz(){
-  quizIndex = 0; scores = {}; answersLog = []; askingPressure = false;
+  quizIndex = 0; scores = {}; answersLog = [];
+  askingPressure = false; askingLighter = false; skinStep = -1;
+  resolvedMassageKey = null; resolvedLighterKey = null; skinTags = [];
   if(QUESTIONS.length === 0) return; // data not loaded yet
   renderQuestion();
 }
@@ -315,7 +326,17 @@ function renderQuestion(){
     const topKey = ranked.length ? ranked[0][0] : null;
     if(topKey === 'massage' && PRESSURE_QUESTION && !askingPressure){
       askingPressure = true;
-      renderPressureQuestion();
+      renderFollowUp(PRESSURE_QUESTION, (o)=>{ resolvedMassageKey = Object.keys(o.w)[0]; });
+      return;
+    }
+    if(topKey === 'lighter' && LIGHTER_QUESTION && !askingLighter){
+      askingLighter = true;
+      renderFollowUp(LIGHTER_QUESTION, (o)=>{ resolvedLighterKey = Object.keys(o.w)[0]; });
+      return;
+    }
+    if(topKey === 'facial' && SKIN_QUESTIONS.length > 0 && skinStep < SKIN_QUESTIONS.length - 1){
+      skinStep++;
+      renderSkinQuestion();
       return;
     }
     renderResult();
@@ -354,25 +375,46 @@ function topServices(){
   return entries;
 }
 
-let resolvedMassageKey = null;
-
-function renderPressureQuestion(){
+function renderFollowUp(question, onPick){
   const stage = document.getElementById('quiz-stage');
   stage.innerHTML = `
     <div class="q-progress">One more thing</div>
     <div class="q-track"><div class="q-fill" style="width:90%"></div></div>
-    <div class="q-title">${PRESSURE_QUESTION.q}</div>
+    <div class="q-title">${question.q}</div>
     <div id="opts-wrap"></div>
   `;
   const optsWrap = document.getElementById('opts-wrap');
-  PRESSURE_QUESTION.opts.forEach(o=>{
+  question.opts.forEach(o=>{
     const b = document.createElement('button');
     b.className = 'opt';
     b.textContent = o.t;
     b.addEventListener('click', ()=>{
-      resolvedMassageKey = Object.keys(o.w)[0];
-      answersLog.push({ q:PRESSURE_QUESTION.q, a:o.t });
-      renderResult();
+      onPick(o);
+      answersLog.push({ q:question.q, a:o.t });
+      renderQuestion();
+    });
+    optsWrap.appendChild(b);
+  });
+}
+
+function renderSkinQuestion(){
+  const stage = document.getElementById('quiz-stage');
+  const q = SKIN_QUESTIONS[skinStep];
+  stage.innerHTML = `
+    <div class="q-progress">A bit more about your skin</div>
+    <div class="q-track"><div class="q-fill" style="width:${90 + skinStep*3}%"></div></div>
+    <div class="q-title">${q.q}</div>
+    <div id="opts-wrap"></div>
+  `;
+  const optsWrap = document.getElementById('opts-wrap');
+  q.opts.forEach(o=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = o.t;
+    b.addEventListener('click', ()=>{
+      skinTags.push(o.tag);
+      answersLog.push({ q:q.q, a:o.t });
+      renderQuestion();
     });
     optsWrap.appendChild(b);
   });
@@ -387,23 +429,49 @@ function pickTherapist(serviceKey){
 
 function labelFor(key){
   if(key === 'massage') return 'Massage Therapy';
+  if(key === 'lighter') return 'Reiki or Reflexology';
   return SERVICES[key] ? SERVICES[key].label : key;
+}
+
+const MASSAGE_KEYS = ['therapeutic','deep_tissue','sports','prenatal'];
+
+function suggestedDuration(score){
+  // Simple first-pass heuristic: more weighted answers pointing the same
+  // direction suggests more ground to cover. Tune the threshold as you learn
+  // what actually matches client feedback.
+  return score >= 6 ? '120 minutes' : '90 minutes';
 }
 
 function renderResult(){
   const stage = document.getElementById('quiz-stage');
   const ranked = topServices();
   let primaryKey = ranked.length ? ranked[0][0] : 'therapeutic';
+  let primaryScore = ranked.length ? ranked[0][1] : 0;
   if(primaryKey === 'massage'){
     primaryKey = resolvedMassageKey || 'therapeutic';
   }
+  if(primaryKey === 'lighter'){
+    primaryKey = resolvedLighterKey || 'reiki';
+  }
   const secondaryRaw = ranked.length>1 && ranked[1][1] >= ranked[0][1]*0.6 ? ranked[1][0] : null;
-  const secondaryKey = (secondaryRaw === 'massage') ? null : secondaryRaw; // avoid showing unresolved generic massage as secondary
+  const secondaryKey = (secondaryRaw === 'massage' || secondaryRaw === 'lighter') ? null : secondaryRaw;
 
   const svc = SERVICES[primaryKey];
   const pick = pickTherapist(primaryKey);
   const th = pick ? pick.therapist : null;
   const offersFootScrub = pick && ADD_ONS.footScrub && ADD_ONS.footScrub.therapists.includes(pick.key);
+  const bookHref = (pick && svc.therapistBookingUrls && svc.therapistBookingUrls[pick.key]) || svc.bookingUrl || BOOKING_URL;
+  const isMassageType = MASSAGE_KEYS.includes(primaryKey);
+  const durationText = isMassageType ? suggestedDuration(primaryScore) : null;
+
+  let skinNote = '';
+  if(primaryKey === 'facial' && skinTags.length){
+    skinNote = `<div class="cadence-line" style="margin-top:6px;">What you shared: ${skinTags.join(', ')}</div>`;
+  }
+  let pairedNote = '';
+  if(primaryKey === 'salt_chamber' && (scores.lymphatic||0) > 0){
+    pairedNote = `<div class="cadence-line" style="margin-top:6px;">Since you also mentioned swelling or puffiness, pairing this with Manual Lymphatic Drainage is worth asking about too.</div>`;
+  }
 
   stage.innerHTML = `
     <div class="card">
@@ -419,8 +487,11 @@ function renderResult(){
         </div>
       </div>` : ''}
       <div class="cadence-line">Suggested rhythm: ${svc.cadence}</div>
+      ${durationText ? `<div class="cadence-line" style="margin-top:6px;">Suggested length: ${durationText}</div>` : ''}
       ${offersFootScrub ? `<div class="cadence-line" style="margin-top:6px;">Ask about adding a Foot Scrub to your visit with ${th.name}.</div>` : ''}
-      <a class="btn-primary" href="${BOOKING_URL}" target="_blank" rel="noopener">Book ${svc.label}${th ? ` with ${th.name}` : ''}</a>
+      ${skinNote}
+      ${pairedNote}
+      <a class="btn-primary" href="${bookHref}" target="_blank" rel="noopener">Book ${svc.label}${th ? ` with ${th.name}` : ''}</a>
       ${svc.blogUrl ? `<a class="btn-secondary" style="display:block;text-decoration:none;" href="${svc.blogUrl}" target="_blank" rel="noopener">Learn more about ${svc.label}</a>` : ''}
       ${th && th.email ? `<button class="btn-secondary" id="email-therapist-btn">Email this to ${th.name}</button>` : ''}
       ${secondaryKey ? `<div class="secondary-note">Also worth a look: <strong style="color:var(--cream)">${labelFor(secondaryKey)}</strong>. You mentioned enough there that it's worth mentioning at your visit.</div>` : ''}
@@ -428,6 +499,11 @@ function renderResult(){
     </div>
   `;
   if(th) updateBookBar(svc.label, th.name);
+  else {
+    document.getElementById('book-bar-headline').textContent = `Book ${svc.label}`;
+    document.getElementById('book-bar-sub').textContent = `at Healing Souls`;
+  }
+  document.getElementById('book-bar-btn').href = bookHref;
 
   document.getElementById('retake-btn').addEventListener('click', startQuiz);
   const emailBtn = document.getElementById('email-therapist-btn');
@@ -439,6 +515,7 @@ function renderResult(){
         body += `\n- ${entry.q}\n  ${entry.a}`;
       });
       body += `\n\nSuggested rhythm: ${svc.cadence}`;
+      if(durationText) body += `\nSuggested length: ${durationText}`;
       if(secondaryKey){
         body += `\nAlso flagged: ${labelFor(secondaryKey)}`;
       }

@@ -174,6 +174,8 @@ function renderServices(){
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.key = key;
+    const therapistList = s.therapists || (s.therapist ? [s.therapist] : []); // fall back for old single-therapist data
+    const comboLinks = s.therapistBookingUrls || {};
     card.innerHTML = `
       <button class="del" data-action="del-service">Remove</button>
       <label>Key (used internally, lowercase, no spaces)</label>
@@ -184,18 +186,64 @@ function renderServices(){
         <div><label>Cadence text (shown to client)</label><input class="s-cadence" value="${s.cadence||''}"></div>
         <div><label>Cadence in days (for due-date math)</label><input class="s-cadenceDays" type="number" value="${s.cadenceDays||28}"></div>
       </div>
-      <label>Assigned employee</label>
-      <select class="s-therapist"></select>
+      <label>Who can perform this (check all that qualify; leave all unchecked if no specific person is needed, like a Salt Chamber session)</label>
+      <div class="therapist-checks"></div>
+      <label>Fallback booking link for this service (optional — used when no specific-person link below is set)</label>
+      <input class="s-bookingUrl" value="${s.bookingUrl||''}" placeholder="https://booking.mangomint.com/healingsouls/...">
+      <div class="combo-links"></div>
       <label>Blog link ("learn more" button, optional)</label>
       <input class="s-blogUrl" value="${s.blogUrl||''}" placeholder="https://www.healingsoulsmt.com/blog/...">
     `;
-    const sel = card.querySelector('.s-therapist');
+    const checksWrap = card.querySelector('.therapist-checks');
+    const comboWrap = card.querySelector('.combo-links');
+
+    function renderComboInputs(){
+      // Capture whatever is currently typed before wiping the DOM, so toggling
+      // a checkbox doesn't discard edits made to other links in this card.
+      const currentValues = {};
+      comboWrap.querySelectorAll('.s-combo-url').forEach(input=>{
+        currentValues[input.dataset.therapistKey] = input.value;
+      });
+      comboWrap.innerHTML = '';
+      const checkedKeys = Array.from(checksWrap.querySelectorAll('.s-therapist-check:checked')).map(cb=>cb.dataset.key);
+      if(checkedKeys.length === 0) return;
+      const heading = document.createElement('label');
+      heading.textContent = 'Best-case: exact link for this service with this specific person (optional, most precise)';
+      comboWrap.appendChild(heading);
+      checkedKeys.forEach(tKey=>{
+        const name = (currentData.therapists[tKey] && currentData.therapists[tKey].name) || tKey;
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px;';
+        const tag = document.createElement('span');
+        tag.textContent = name;
+        tag.style.cssText = 'font-family:IBM Plex Mono,monospace;font-size:12px;color:var(--sage);min-width:70px;';
+        const input = document.createElement('input');
+        input.className = 's-combo-url';
+        input.dataset.therapistKey = tKey;
+        input.placeholder = `https://booking.mangomint.com/healingsouls/... (for ${name})`;
+        input.value = (tKey in currentValues) ? currentValues[tKey] : (comboLinks[tKey] || '');
+        row.appendChild(tag);
+        row.appendChild(input);
+        comboWrap.appendChild(row);
+      });
+    }
+    renderComboInputs();
+
     Object.entries(currentData.therapists).forEach(([tKey, t])=>{
-      const opt = document.createElement('option');
-      opt.value = tKey; opt.textContent = t.name;
-      if(tKey === s.therapist) opt.selected = true;
-      sel.appendChild(opt);
+      const label = document.createElement('label');
+      label.style.cssText = 'display:flex;align-items:center;gap:8px;font-family:Karla,sans-serif;text-transform:none;letter-spacing:0;font-size:14px;margin:6px 0;color:var(--cream);';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 's-therapist-check';
+      cb.dataset.key = tKey;
+      cb.style.cssText = 'width:auto;';
+      cb.checked = therapistList.includes(tKey);
+      cb.addEventListener('change', renderComboInputs);
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(t.name || tKey));
+      checksWrap.appendChild(label);
     });
+    renderComboInputs();
     card.querySelector('[data-action="del-service"]').addEventListener('click', ()=>{
       if(confirm(`Remove ${s.label}? This also removes it from the check-in quiz scoring for anyone using old cached data until they refresh.`)){
         card.remove();
@@ -210,14 +258,13 @@ document.getElementById('addTherapist').addEventListener('click', ()=>{
   if(!key) return;
   currentData.therapists[key] = { name:'', initial:'', email:'', blurb:'' };
   renderTherapists();
-  renderServices(); // refresh dropdowns
+  renderServices(); // refresh checkboxes
 });
 
 document.getElementById('addService').addEventListener('click', ()=>{
   const key = prompt('Short key for this service (lowercase, no spaces), e.g. "cupping":');
   if(!key) return;
-  const firstTherapist = Object.keys(currentData.therapists)[0] || '';
-  currentData.services[key] = { label:'', cadence:'', cadenceDays:28, therapist:firstTherapist, blogUrl:'' };
+  currentData.services[key] = { label:'', cadence:'', cadenceDays:28, therapists:[], blogUrl:'', bookingUrl:'', therapistBookingUrls:{} };
   renderServices();
 });
 
@@ -237,11 +284,19 @@ function collectFromForm(){
   document.querySelectorAll('#serviceList .card').forEach(card=>{
     const key = card.querySelector('.s-key').value.trim();
     if(!key) return;
+    const checkedTherapists = Array.from(card.querySelectorAll('.s-therapist-check:checked')).map(cb=>cb.dataset.key);
+    const therapistBookingUrls = {};
+    card.querySelectorAll('.s-combo-url').forEach(input=>{
+      const val = input.value.trim();
+      if(val) therapistBookingUrls[input.dataset.therapistKey] = val;
+    });
     services[key] = {
       label: card.querySelector('.s-label').value.trim(),
       cadence: card.querySelector('.s-cadence').value.trim(),
       cadenceDays: parseInt(card.querySelector('.s-cadenceDays').value, 10) || 28,
-      therapist: card.querySelector('.s-therapist').value,
+      therapists: checkedTherapists,
+      bookingUrl: card.querySelector('.s-bookingUrl').value.trim(),
+      therapistBookingUrls,
       blogUrl: card.querySelector('.s-blogUrl').value.trim()
     };
   });
@@ -249,7 +304,11 @@ function collectFromForm(){
     bookingUrl: document.getElementById('bookingUrl').value.trim(),
     therapists,
     services,
+    addOns: currentData.addOns || {},
     questions: currentData.questions,
+    pressureQuestion: currentData.pressureQuestion || null,
+    lighterQuestion: currentData.lighterQuestion || null,
+    skinQuestions: currentData.skinQuestions || [],
     nudges: currentData.nudges
   };
 }
