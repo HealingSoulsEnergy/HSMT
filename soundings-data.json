@@ -32,9 +32,9 @@
       "opts": [
         { "t": "Tight, sore, or achy muscles", "w": { "massage": 2, "bowen": 1 } },
         { "t": "Puffiness, heaviness, or swelling", "w": { "lymphatic": 3 } },
-        { "t": "My skin, not my muscles", "w": { "facial": 3 } },
+        { "t": "My skin, not my muscles", "w": { "facial": 3 }, "exitEarly": true },
         { "t": "I'm just wound up and can't settle", "w": { "reiki": 2, "massage": 1 } },
-        { "t": "Congested, stuffy, or hard to breathe easy", "w": { "salt_chamber": 3, "lymphatic": 1 } },
+        { "t": "Congested, stuffy, or hard to breathe easy", "w": { "salt_chamber": 3, "lymphatic": 1 }, "exitEarly": true },
         { "t": "Just something gentle and light overall", "w": { "lighter": 2 } }
       ]
     },

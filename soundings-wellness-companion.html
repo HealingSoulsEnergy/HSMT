@@ -361,7 +361,7 @@ function renderQuestion(){
     b.addEventListener('click', ()=>{
       Object.entries(o.w).forEach(([k,v])=>{ scores[k] = (scores[k]||0) + v; });
       answersLog.push({ q:q.q, a:o.t });
-      quizIndex++;
+      quizIndex = o.exitEarly ? QUESTIONS.length : quizIndex + 1;
       renderQuestion();
     });
     optsWrap.appendChild(b);
