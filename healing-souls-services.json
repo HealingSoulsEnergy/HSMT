@@ -1,0 +1,114 @@
+{
+  "_notes": [
+    "Extracted from Mangomint service list screenshots, July 2026.",
+    "Prices with a '+' indicate a starting price that varies by practitioner or add-ons.",
+    "Couples Massage and Special Offers appear as categories in the Mangomint menu but weren't visible in the uploaded screenshots — send those when you get a chance and I'll fill them in.",
+    "Practitioner assignments below come from existing roster info, not the screenshots. Confirm before this goes live anywhere client-facing."
+  ],
+  "categories": [
+    {
+      "category": "Customized Services",
+      "note": "Amenities included",
+      "services": [
+        { "name": "Bowen Therapy", "duration_min": 60, "price": 100 },
+        { "name": "Bowen Therapy", "duration_min": 90, "price": 180 },
+        { "name": "Prenatal Massage", "duration_min": 60, "price": 120 },
+        { "name": "Sports Massage", "duration_min": 60, "price": 120 },
+        { "name": "Sports Massage", "duration_min": 90, "price": 180 },
+        { "name": "Therapeutic Massage", "duration_min": 60, "price": 120 },
+        { "name": "Therapeutic Massage", "duration_min": 90, "price": 180 },
+        { "name": "Therapeutic Massage", "duration_min": 120, "price": 230 },
+        { "name": "Facial", "duration_min": 90, "price": 125 }
+      ]
+    },
+    {
+      "category": "Massage Therapy",
+      "note": null,
+      "services": [
+        { "name": "Therapeutic Massage", "duration_min": 30, "price": 55 },
+        { "name": "Chair Massage", "duration_min": 30, "price": 55 },
+        { "name": "Therapeutic Massage", "duration_min": 60, "price": "90+" },
+        { "name": "Therapeutic Massage", "duration_min": 90, "price": "150+" },
+        { "name": "Reflexology", "duration_min": null, "price": 65 },
+        { "name": "Reiki", "duration_min": null, "price": 65 }
+      ]
+    },
+    {
+      "category": "Couples Massage",
+      "note": "Not visible in uploaded screenshots — add pricing when available",
+      "services": []
+    },
+    {
+      "category": "Manual Lymph Drainage",
+      "note": null,
+      "services": [
+        { "name": "Lymph Drainage", "duration_min": 30, "price": 55 },
+        { "name": "Lymph Drainage", "duration_min": 60, "price": 100 },
+        { "name": "Lymph Drainage with Massage Therapy", "duration_min": 90, "price": 180 }
+      ]
+    },
+    {
+      "category": "Facials",
+      "note": null,
+      "services": [
+        { "name": "Facial", "duration_min": null, "price": "95+" }
+      ]
+    },
+    {
+      "category": "Halo Therapy - Salt Chamber",
+      "note": null,
+      "services": [
+        { "name": "Salt Chamber", "duration_min": 30, "price": 35 },
+        { "name": "Salt Chamber with Reflexology", "duration_min": 30, "price": 70 }
+      ]
+    },
+    {
+      "category": "Special Offers",
+      "note": "Not visible in uploaded screenshots — add details when available",
+      "services": []
+    },
+    {
+      "category": "Foot Detox",
+      "note": null,
+      "services": [
+        { "name": "Foot Detox Bath", "duration_min": null, "price": 35 }
+      ]
+    },
+    {
+      "category": "Waxing",
+      "note": null,
+      "services": [
+        { "name": "Back Waxing", "duration_min": null, "price": 70 },
+        { "name": "Cheek, Chin, or Lip Waxing", "duration_min": null, "price": 20 },
+        { "name": "Brows Waxing", "duration_min": null, "price": 25 }
+      ]
+    }
+  ],
+  "staff": [
+    {
+      "name": "Ken",
+      "role": "LMT / Owner",
+      "specialties": ["Massage Therapy", "Reiki", "Reflexology"]
+    },
+    {
+      "name": "Juliann",
+      "role": "LMT",
+      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Manual Lymphatic Drainage", "Bowen Therapy", "Reiki"]
+    },
+    {
+      "name": "Amanda",
+      "role": "LMT",
+      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Manual Lymphatic Drainage", "Reiki"]
+    },
+    {
+      "name": "Stacie",
+      "role": "LMT",
+      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Foot Scrubs"]
+    },
+    {
+      "name": "Alex",
+      "role": "Esthetician",
+      "specialties": ["Facials and Skincare", "Pevonia"]
+    }
+  ]
+}
