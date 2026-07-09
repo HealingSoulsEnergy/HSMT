@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#16302B">
-<title>Soundings — a Healing Souls wellness companion</title>
+<title>Balance — a Healing Souls wellness companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -55,23 +55,23 @@
   }
   .ring{
     position:absolute;border-radius:50%;
-    border:1.5px solid var(--sage-dim);
+    border:2px solid var(--sage);
     animation:breathe 8s ease-in-out infinite;
   }
   .ring.r1{width:180px;height:180px;animation-delay:0s;}
-  .ring.r2{width:180px;height:180px;border-color:var(--clay);opacity:0.6;animation-delay:0s;animation-name:breatheInner;}
+  .ring.r2{width:180px;height:180px;border-color:var(--clay-bright);opacity:0.7;animation-delay:0s;animation-name:breatheInner;}
   .ring-label{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--sand);
     position:relative;z-index:2;
   }
   @keyframes breathe{
-    0%,100%{transform:scale(0.72);opacity:0.35;}
-    50%{transform:scale(1);opacity:0.9;}
+    0%,100%{transform:scale(0.72);opacity:0.5;box-shadow:none;}
+    50%{transform:scale(1);opacity:1;box-shadow:0 0 24px 2px rgba(143,174,150,0.55);}
   }
   @keyframes breatheInner{
-    0%,100%{transform:scale(0.5);opacity:0.15;}
-    50%{transform:scale(0.82);opacity:0.55;}
+    0%,100%{transform:scale(0.5);opacity:0.3;box-shadow:none;}
+    50%{transform:scale(0.82);opacity:0.85;box-shadow:0 0 20px 2px rgba(212,141,103,0.6);}
   }
   .hero h1{font-size:clamp(32px,7vw,44px);line-height:1.05;letter-spacing:-0.01em;}
   .hero h1 em{font-style:italic;color:var(--clay-bright);}
@@ -242,7 +242,7 @@
       <div class="ring r2"></div>
       <div class="ring-label">breathe</div>
     </div>
-    <h1>Take a <em>sounding.</em></h1>
+    <h1>Find Some <em>Balance.</em></h1>
     <p>A quiet check-in on how you're actually doing, from Healing Souls Wellness Center. A few questions, a straight answer on what would help, and a nudge here and there so you don't wait too long to come back.</p>
   </div>
 
@@ -332,7 +332,7 @@ async function loadData(){
       ? `The data file took too long to load from ${attemptedUrl}. Check that this page and soundings-data.json are both live at that address.`
       : (err.message || 'This page could not load its data.');
     stage.innerHTML = `<div class="card"><p>${msg}</p><p style="margin-top:10px;">If you're opening this file directly from your computer rather than from a live website address, that's expected, browsers block this kind of file loading unless it's served over http or https.</p></div>`;
-    console.error('Soundings data load failed:', err);
+    console.error('Balance data load failed:', err);
     return false;
   }
 }
@@ -573,7 +573,7 @@ function renderResult(){
       if(secondaryKey){
         body += `\nAlso flagged: ${labelFor(secondaryKey)}`;
       }
-      body += `\n\n(Sent from the Soundings check-in on the website. The client will book separately.)`;
+      body += `\n\n(Sent from the Balance check-in on the website. The client will book separately.)`;
       window.location.href = `mailto:${th.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
   }
@@ -617,7 +617,7 @@ function renderSideRails(){
       renderSideRails();
     }catch(err){
       document.getElementById('quiz-stage').innerHTML = `<div class="card"><p>Something went wrong setting up the check-in: ${err.message}. Try refreshing the page.</p></div>`;
-      console.error('Soundings init failed:', err);
+      console.error('Balance init failed:', err);
     }
   }
 })();
