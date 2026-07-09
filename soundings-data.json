@@ -17,7 +17,7 @@
     "lymphatic":    { "label": "Manual Lymphatic Drainage", "cadence": "a short series close together, then monthly to maintain it", "cadenceDays": 28, "therapists": ["ken","juliann","amanda"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Gentle, rhythmic strokes that encourage fluid movement and ease swelling." },
     "reiki":        { "label": "Reiki",                "cadence": "every 4 to 6 weeks, or whenever things feel like too much", "cadenceDays": 35, "therapists": ["ken","juliann","amanda"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Hands-on energy work aimed at deep relaxation and emotional balance." },
     "reflexology":  { "label": "Reflexology",          "cadence": "every 3 to 4 weeks",                                       "cadenceDays": 24, "therapists": ["ken"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Focused pressure-point work on the feet, linked to whole-body wellbeing." },
-    "bowen":        { "label": "Bowen Therapy",        "cadence": "a short series about a week apart, then as needed",        "cadenceDays": 14, "therapists": ["juliann"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Gentle, precise moves that help reset the body's alignment and nervous system." },
+    "bowen":        { "label": "Bowen Therapy",        "cadence": "a short series about a week apart, then as needed",        "cadenceDays": 14, "therapists": ["juliann"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Slow, deliberate moves that interrupt tension patterns and reset the nervous system, often felt deeply." },
     "salt_chamber": { "label": "Salt Chamber Session", "cadence": "1 to 3 times a week while symptoms are active, then as needed", "cadenceDays": 7, "therapists": [], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Dry salt therapy that supports easier breathing and clearer sinuses." },
     "facial":       { "label": "Facial & Skincare",    "cadence": "every 4 weeks, with your skin's natural renewal cycle",    "cadenceDays": 28, "therapists": ["alex"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "A custom skincare treatment that cleanses, exfoliates, and nourishes." }
   },
@@ -50,7 +50,8 @@
     {
       "q": "Any swelling, fluid retention, or recent surgery/travel?",
       "opts": [
-        { "t": "Yes, noticeably", "w": { "lymphatic": 3 } },
+        { "t": "Recent surgery — we'll confirm timing is safe before booking", "w": { "lymphatic": 3 } },
+        { "t": "Yes, noticeable swelling or fluid retention", "w": { "lymphatic": 3 } },
         { "t": "A little, nothing major", "w": { "lymphatic": 1, "massage": 1 } },
         { "t": "No, not really", "w": { "massage": 1 } },
         { "t": "Not sure", "w": {} }
