@@ -10,17 +10,63 @@
   },
 
   "services": {
-    "therapeutic": { "label": "Therapeutic Massage",  "cadence": "every 4 to 6 weeks",                                       "cadenceDays": 35, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Balanced, even pressure aimed at full-body relaxation and everyday stress relief." },
-    "deep_tissue":  { "label": "Deep Tissue Massage",  "cadence": "every 3 to 5 weeks, especially while working through chronic tension", "cadenceDays": 28, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Firm, targeted pressure that works through chronic tension and stubborn knots." },
-    "sports":       { "label": "Sports Massage",       "cadence": "before or after heavy activity, or every 2 to 4 weeks if training regularly", "cadenceDays": 21, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Prepares muscles before activity or speeds recovery afterward." },
-    "prenatal":     { "label": "Prenatal Massage",     "cadence": "every 3 to 4 weeks throughout pregnancy, adjusted with your provider's guidance", "cadenceDays": 24, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Pregnancy-safe positioning and pressure to ease the physical strain of carrying." },
-    "lymphatic":    { "label": "Manual Lymphatic Drainage", "cadence": "a short series close together, then monthly to maintain it", "cadenceDays": 28, "therapists": ["ken","juliann","amanda"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Gentle, rhythmic strokes that encourage fluid movement and ease swelling." },
-    "reiki":        { "label": "Reiki",                "cadence": "every 4 to 6 weeks, or whenever things feel like too much", "cadenceDays": 35, "therapists": ["ken","juliann","amanda"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Hands-on energy work aimed at deep relaxation and emotional balance." },
-    "reflexology":  { "label": "Reflexology",          "cadence": "every 3 to 4 weeks",                                       "cadenceDays": 24, "therapists": ["ken"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Focused pressure-point work on the feet, linked to whole-body wellbeing." },
-    "bowen":        { "label": "Bowen Therapy",        "cadence": "a short series about a week apart, then as needed",        "cadenceDays": 14, "therapists": ["juliann"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Slow, deliberate moves that interrupt tension patterns and reset the nervous system, often felt deeply." },
-    "salt_chamber": { "label": "Salt Chamber Session", "cadence": "1 to 3 times a week while symptoms are active, then as needed", "cadenceDays": 7, "therapists": [], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "Dry salt therapy that supports easier breathing and clearer sinuses." },
+    "therapeutic": {
+      "label": "Therapeutic Massage",
+      "cadence": "every 4 to 6 weeks",
+      "cadenceDays": 35,
+      "therapists": ["ken","juliann","amanda","stacie"],
+      "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {},
+      "description": "Balanced, even pressure aimed at full-body relaxation and everyday stress relief.",
+      "durationLinks": {
+        "30": { "url": "https://booking.mangomint.com/healingsouls?serviceId=30", "price": "$55" },
+        "60": { "url": "https://booking.mangomint.com/healingsouls?serviceId=21", "price": "$90+" },
+        "90": { "url": "https://booking.mangomint.com/healingsouls?serviceId=22", "price": "$150+" },
+        "120": { "url": "https://booking.mangomint.com/healingsouls?serviceId=23", "price": "$230 (Customized)" }
+      }
+    },
+    "chair_massage": { "label": "Chair Massage", "cadence": "anytime you need a quick reset", "cadenceDays": 14, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=38", "therapistBookingUrls": {}, "description": "A quick, clothes-on, seated massage focused on the neck, shoulders, and back." },
+    "prenatal":     { "label": "Prenatal Massage",     "cadence": "every 3 to 4 weeks throughout pregnancy, adjusted with your provider's guidance", "cadenceDays": 24, "therapists": ["ken","juliann","amanda","stacie"], "blogUrl": "", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=49", "therapistBookingUrls": {}, "description": "Pregnancy-safe positioning and pressure to ease the physical strain of carrying." },
+    "lymphatic": {
+      "label": "Manual Lymphatic Drainage",
+      "cadence": "a short series close together, then monthly to maintain it",
+      "cadenceDays": 28,
+      "therapists": ["ken","juliann","amanda"],
+      "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {},
+      "description": "Gentle, rhythmic strokes that encourage fluid movement and ease swelling.",
+      "durationLinks": {
+        "30": { "url": "https://booking.mangomint.com/healingsouls?serviceId=85", "price": "$55" },
+        "60": { "url": "https://booking.mangomint.com/healingsouls?serviceId=86", "price": "$100" },
+        "90": { "url": "https://booking.mangomint.com/healingsouls?serviceId=87", "price": "$180 (with Massage Therapy)" }
+      }
+    },
+    "reiki":        { "label": "Reiki",                "cadence": "every 4 to 6 weeks, or whenever things feel like too much", "cadenceDays": 35, "therapists": ["ken","juliann","amanda"], "blogUrl": "", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=51", "therapistBookingUrls": {}, "description": "Hands-on energy work aimed at deep relaxation and emotional balance." },
+    "reflexology":  { "label": "Reflexology",          "cadence": "every 3 to 4 weeks",                                       "cadenceDays": 24, "therapists": ["ken"], "blogUrl": "", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=50", "therapistBookingUrls": {}, "description": "Focused pressure-point work on the feet, linked to whole-body wellbeing." },
+    "bowen": {
+      "label": "Bowen Therapy",
+      "cadence": "a short series about a week apart, then as needed",
+      "cadenceDays": 14,
+      "therapists": ["juliann"],
+      "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {},
+      "description": "Gentle, precise moves that help reset the body's alignment and nervous system.",
+      "durationLinks": {
+        "60": { "url": "https://booking.mangomint.com/healingsouls?serviceId=43", "price": "$100" },
+        "90": { "url": "https://booking.mangomint.com/healingsouls?serviceId=41", "price": "$180" }
+      }
+    },
+    "salt_chamber": { "label": "Salt Chamber Session", "cadence": "1 to 3 times a week while symptoms are active, then as needed", "cadenceDays": 7, "therapists": [], "blogUrl": "", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=20", "therapistBookingUrls": {}, "description": "Dry salt therapy that supports easier breathing and clearer sinuses." },
     "facial":       { "label": "Facial & Skincare",    "cadence": "every 4 weeks, with your skin's natural renewal cycle",    "cadenceDays": 28, "therapists": ["alex"], "blogUrl": "", "bookingUrl": "", "therapistBookingUrls": {}, "description": "A custom skincare treatment that cleanses, exfoliates, and nourishes." }
   },
+
+  "moreServices": [
+    { "label": "Couples Massage", "note": "Options selectable in booking", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=81" },
+    { "label": "Salt Chamber with Reflexology", "note": "30 min · $70", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=84" },
+    { "label": "Foot Detox Bath", "note": "$35", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=29" },
+    { "label": "Back Waxing", "note": "$70", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=78" },
+    { "label": "Cheek, Chin, or Lip Waxing", "note": "$20", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=79" },
+    { "label": "Brow Waxing", "note": "$25", "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=32" }
+  ],
+  "comingSoon": "Sauna, plus new combo sessions pairing Salt Chamber with Lymph Drainage or Massage Therapy — details coming soon.",
+  "giftCardUrl": "https://clients.mangomint.com/gift-cards/healingsouls",
 
   "addOns": {
     "footScrub": { "label": "Foot Scrub", "therapists": ["stacie"] }
@@ -50,8 +96,7 @@
     {
       "q": "Any swelling, fluid retention, or recent surgery/travel?",
       "opts": [
-        { "t": "Recent surgery — we'll confirm timing is safe before booking", "w": { "lymphatic": 3 } },
-        { "t": "Yes, noticeable swelling or fluid retention", "w": { "lymphatic": 3 } },
+        { "t": "Yes, noticeably", "w": { "lymphatic": 3 } },
         { "t": "A little, nothing major", "w": { "lymphatic": 1, "massage": 1 } },
         { "t": "No, not really", "w": { "massage": 1 } },
         { "t": "Not sure", "w": {} }
@@ -85,9 +130,10 @@
     "q": "What kind of pressure are you looking for?",
     "opts": [
       { "t": "Light and relaxing", "w": { "therapeutic": 1 } },
-      { "t": "Firm, I want the knots worked out", "w": { "deep_tissue": 1 } },
-      { "t": "Recovering from a workout, training, or physical activity", "w": { "sports": 1 } },
+      { "t": "Firm, I want the knots worked out", "w": { "therapeutic": 1 }, "addOnTag": "deep_tissue" },
+      { "t": "Recovering from a workout, training, or physical activity", "w": { "therapeutic": 1 }, "addOnTag": "sports" },
       { "t": "I'm currently pregnant and need pregnancy-safe massage", "w": { "prenatal": 1 } },
+      { "t": "Something quick, seated, clothes stay on", "w": { "chair_massage": 1 } },
       { "t": "Not sure, whatever feels right", "w": { "therapeutic": 1 } }
     ]
   },
@@ -139,16 +185,20 @@
     "basic": {
       "name": "Basic Facial",
       "price": "$90",
+      "duration": "60 min",
       "tagline": "A clean, classic reset for your skin.",
       "steps": ["Cleanse", "Enzyme exfoliation", "Facial massage", "Facial mask"],
-      "bestFor": "A straightforward, relaxing facial that covers the essentials well. Great if you're not chasing a specific problem, just want your skin (and you) to feel refreshed."
+      "bestFor": "A straightforward, relaxing facial that covers the essentials well. Great if you're not chasing a specific problem, just want your skin (and you) to feel refreshed.",
+      "bookingUrl": ""
     },
     "customized": {
       "name": "Customized Facial",
       "price": "$125",
+      "duration": "90 min",
       "tagline": "Built around what your skin actually needs.",
       "steps": ["Cleanse", "Enzyme exfoliation", "Facial massage", "Concentrated Pevonia ampules matched to your skin", "Upgraded mask or peel"],
-      "bestFor": "Best when you have something specific you're trying to address, like acne, aging, dullness, sensitivity, or hyperpigmentation. Alex mixes and matches Pevonia's line to target it directly."
+      "bestFor": "Best when you have something specific you're trying to address, like acne, aging, dullness, sensitivity, or hyperpigmentation. Alex mixes and matches Pevonia's line to target it directly.",
+      "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=36"
     }
   },
 

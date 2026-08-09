@@ -5,23 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#16302B">
-<title>Balance — a Healing Souls wellness companion</title>
+<meta name="theme-color" content="#F6F1E7">
+<title>The Companion — Healing Souls Wellness Center</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#132824;
-    --bg-alt:#1B3A33;
-    --card:#20443B;
-    --card-line:rgba(143,174,150,0.22);
-    --cream:#F7F2E7;
-    --sand:#EDE4D3;
-    --sage:#8FAE96;
-    --sage-dim:#5E7C67;
+    --bg:#F6F1E7;
+    --bg-alt:#ECE1CC;
+    --card:#FFFFFF;
+    --card-line:rgba(64,52,36,0.14);
+    --cream:#2B3630;
+    --sand:#55625A;
+    --sage:#4F7A5E;
+    --sage-dim:#9CAA9F;
     --clay:#C17A56;
-    --clay-bright:#D48D67;
+    --clay-bright:#9C5430;
+    --on-clay:#2B1A10;
     --water:#5C8B90;
   }
   *{box-sizing:border-box;}
@@ -50,28 +51,42 @@
   /* ---------- HERO ---------- */
   .hero{padding:56px 0 40px;text-align:center;position:relative;}
   .ring-wrap{
-    width:180px;height:180px;margin:0 auto 28px;position:relative;
+    width:240px;height:240px;margin:0 auto 28px;position:relative;
     display:flex;align-items:center;justify-content:center;
+  }
+  .ring-glow{
+    position:absolute;width:240px;height:240px;border-radius:50%;
+    background:radial-gradient(circle, rgba(193,122,86,0.30) 0%, rgba(193,122,86,0) 68%);
+    filter:blur(2px);
+    animation:glow 8s ease-in-out infinite;
   }
   .ring{
     position:absolute;border-radius:50%;
-    border:2px solid var(--sage);
     animation:breathe 8s ease-in-out infinite;
   }
-  .ring.r1{width:180px;height:180px;animation-delay:0s;}
-  .ring.r2{width:180px;height:180px;border-color:var(--clay-bright);opacity:0.7;animation-delay:0s;animation-name:breatheInner;}
+  .ring.r3{width:236px;height:236px;border:1px dashed var(--sage-dim);opacity:0.45;animation-name:breatheOuter;}
+  .ring.r1{width:188px;height:188px;border:1.5px solid var(--sage);}
+  .ring.r2{width:138px;height:138px;border:2px solid var(--clay);opacity:0.8;animation-name:breatheInner;}
   .ring-label{
     font-family:'IBM Plex Mono',monospace;
-    font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--sand);
-    position:relative;z-index:2;
+    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage);
+    position:relative;z-index:2;transition:opacity 0.5s ease;
+  }
+  @keyframes glow{
+    0%,100%{transform:scale(0.78);opacity:0.55;}
+    50%{transform:scale(1.1);opacity:1;}
   }
   @keyframes breathe{
-    0%,100%{transform:scale(0.72);opacity:0.5;box-shadow:none;}
-    50%{transform:scale(1);opacity:1;box-shadow:0 0 24px 2px rgba(143,174,150,0.55);}
+    0%,100%{transform:scale(0.74);opacity:0.35;}
+    50%{transform:scale(1);opacity:0.95;}
   }
   @keyframes breatheInner{
-    0%,100%{transform:scale(0.5);opacity:0.3;box-shadow:none;}
-    50%{transform:scale(0.82);opacity:0.85;box-shadow:0 0 20px 2px rgba(212,141,103,0.6);}
+    0%,100%{transform:scale(0.55);opacity:0.3;}
+    50%{transform:scale(0.9);opacity:0.8;}
+  }
+  @keyframes breatheOuter{
+    0%,100%{transform:scale(0.9);opacity:0.22;}
+    50%{transform:scale(1.04);opacity:0.55;}
   }
   .hero h1{font-size:clamp(32px,7vw,44px);line-height:1.05;letter-spacing:-0.01em;}
   .hero h1 em{font-style:italic;color:var(--clay-bright);}
@@ -131,14 +146,14 @@
     background:var(--bg-alt);border-radius:12px;border:1px solid var(--card-line);
   }
   .therapist-initial{
-    width:40px;height:40px;border-radius:50%;background:var(--clay);color:var(--bg);
+    width:40px;height:40px;border-radius:50%;background:var(--clay);color:var(--on-clay);
     display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:17px;flex-shrink:0;
   }
   .cadence-line{
     font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--sage);margin-top:14px;
   }
   .btn-primary{
-    display:block;width:100%;text-align:center;background:var(--clay);color:var(--bg);
+    display:block;width:100%;text-align:center;background:var(--clay);color:var(--on-clay);
     font-family:'Karla',sans-serif;font-weight:700;font-size:15px;padding:15px;border-radius:12px;
     text-decoration:none;margin-top:18px;border:none;cursor:pointer;
   }
@@ -175,7 +190,7 @@
   /* ---------- STICKY BOOK BAR ---------- */
   .book-bar{
     position:fixed;bottom:0;left:0;right:0;
-    background:rgba(19,40,36,0.92);backdrop-filter:blur(8px);
+    background:rgba(246,241,231,0.92);backdrop-filter:blur(8px);
     border-top:1px solid var(--card-line);
     padding:12px 20px calc(12px + env(safe-area-inset-bottom));
     display:flex;align-items:center;gap:12px;z-index:50;
@@ -183,7 +198,7 @@
   .book-bar-text{flex:1;font-size:13px;color:var(--sand);}
   .book-bar-text strong{display:block;color:var(--cream);font-size:14.5px;}
   .book-bar a{
-    background:var(--clay);color:var(--bg);text-decoration:none;font-weight:700;font-size:14px;
+    background:var(--clay);color:var(--on-clay);text-decoration:none;font-weight:700;font-size:14px;
     padding:11px 18px;border-radius:10px;font-family:'Karla',sans-serif;white-space:nowrap;
   }
 
@@ -238,17 +253,20 @@
 <div class="wrap">
   <div class="hero">
     <div class="ring-wrap">
+      <div class="ring-glow"></div>
+      <div class="ring r3"></div>
       <div class="ring r1"></div>
       <div class="ring r2"></div>
-      <div class="ring-label">breathe</div>
+      <div class="ring-label" id="ring-label">breathe</div>
     </div>
-    <h1>Find Some <em>Balance.</em></h1>
+    <h1>Meet <em>The Companion.</em></h1>
     <p>A quiet check-in on how you're actually doing, from Healing Souls Wellness Center. A few questions, a straight answer on what would help, and a nudge here and there so you don't wait too long to come back.</p>
   </div>
 
   <div class="tabs">
     <button class="tab active" data-tab="quiz">Check In</button>
     <button class="tab" data-tab="today">Today</button>
+    <button class="tab" data-tab="more">More Services</button>
   </div>
 
   <!-- QUIZ PANEL -->
@@ -266,6 +284,11 @@
       <h3>While you're at it</h3>
       <p>Unclench your jaw. Drop your shoulders away from your ears. Take one breath all the way down to your belly. None of this replaces bodywork, it just gets you to your next appointment in better shape.</p>
     </div>
+  </section>
+
+  <!-- MORE SERVICES PANEL -->
+  <section class="panel" id="panel-more">
+    <div id="more-services-stage"></div>
   </section>
 
   <footer>Healing Souls Wellness Center · Akron, Ohio</footer>
@@ -298,6 +321,9 @@ let PRESSURE_QUESTION = null;
 let LIGHTER_QUESTION = null;
 let SKIN_QUESTIONS = [];
 let ADD_ONS = {};
+let MORE_SERVICES = [];
+let GIFT_CARD_URL = '';
+let COMING_SOON = '';
 let BOOKING_URL = 'https://www.healingsoulsmt.com';
 
 async function loadData(){
@@ -319,9 +345,12 @@ async function loadData(){
     LIGHTER_QUESTION = data.lighterQuestion || null;
     SKIN_QUESTIONS = data.skinQuestions || [];
     ADD_ONS = data.addOns || {};
+    MORE_SERVICES = data.moreServices || [];
+    GIFT_CARD_URL = data.giftCardUrl || '';
+    COMING_SOON = data.comingSoon || '';
     SERVICES = {}; CADENCE_DAYS = {};
     Object.entries(data.services).forEach(([key, s])=>{
-      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '', bookingUrl:s.bookingUrl || '', therapistBookingUrls: s.therapistBookingUrls || {}, description: s.description || '' };
+      SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '', bookingUrl:s.bookingUrl || '', therapistBookingUrls: s.therapistBookingUrls || {}, description: s.description || '', durationLinks: s.durationLinks || null };
       CADENCE_DAYS[key] = s.cadenceDays;
     });
     document.querySelectorAll('a[href="https://www.healingsoulsmt.com"]').forEach(a=>{ a.href = BOOKING_URL; });
@@ -332,7 +361,7 @@ async function loadData(){
       ? `The data file took too long to load from ${attemptedUrl}. Check that this page and soundings-data.json are both live at that address.`
       : (err.message || 'This page could not load its data.');
     stage.innerHTML = `<div class="card"><p>${msg}</p><p style="margin-top:10px;">If you're opening this file directly from your computer rather than from a live website address, that's expected, browsers block this kind of file loading unless it's served over http or https.</p></div>`;
-    console.error('Balance data load failed:', err);
+    console.error('The Companion data load failed:', err);
     return false;
   }
 }
@@ -358,13 +387,32 @@ let askingPressure = false;
 let askingLighter = false;
 let skinStep = -1; // -1 = not in skin branch, 0/1 = which skin sub-question
 let resolvedMassageKey = null;
+let resolvedAddOnTag = null;
 let resolvedLighterKey = null;
 let skinTags = [];
+
+function renderGate(){
+  const stage = document.getElementById('quiz-stage');
+  stage.innerHTML = `
+    <div class="card">
+      <div class="q-title" style="margin-bottom:16px;">What brings you here today?</div>
+      <button class="opt" id="gate-service">Help me find the right service</button>
+      ${GIFT_CARD_URL ? `<button class="opt" id="gate-giftcard">I'm looking for a gift card</button>` : ''}
+    </div>
+  `;
+  document.getElementById('gate-service').addEventListener('click', startQuiz);
+  const giftBtn = document.getElementById('gate-giftcard');
+  if(giftBtn){
+    giftBtn.addEventListener('click', ()=>{
+      window.open(GIFT_CARD_URL, '_blank', 'noopener');
+    });
+  }
+}
 
 function startQuiz(){
   quizIndex = 0; scores = {}; answersLog = [];
   askingPressure = false; askingLighter = false; skinStep = -1;
-  resolvedMassageKey = null; resolvedLighterKey = null; skinTags = [];
+  resolvedMassageKey = null; resolvedAddOnTag = null; resolvedLighterKey = null; skinTags = [];
   if(QUESTIONS.length === 0) return; // data not loaded yet
   renderQuestion();
 }
@@ -376,7 +424,7 @@ function renderQuestion(){
     const topKey = ranked.length ? ranked[0][0] : null;
     if(topKey === 'massage' && PRESSURE_QUESTION && !askingPressure){
       askingPressure = true;
-      renderFollowUp(PRESSURE_QUESTION, (o)=>{ resolvedMassageKey = Object.keys(o.w)[0]; });
+      renderFollowUp(PRESSURE_QUESTION, (o)=>{ resolvedMassageKey = Object.keys(o.w)[0]; resolvedAddOnTag = o.addOnTag || null; });
       return;
     }
     if(topKey === 'lighter' && LIGHTER_QUESTION && !askingLighter){
@@ -483,17 +531,35 @@ function labelFor(key){
   return SERVICES[key] ? SERVICES[key].label : key;
 }
 
-const MASSAGE_KEYS = ['therapeutic','deep_tissue','sports','prenatal'];
+const ADD_ON_NOTES = {
+  deep_tissue: "Ask for a Deep Tissue approach, firmer pressure to work through the knots.",
+  sports: "Mention you're recovering from training or activity, Sports Massage technique can help."
+};
 
-function suggestedDuration(score){
+function suggestedDurationMinutes(score){
   // Calibrated against real playthroughs: scores for a winning massage-type
   // category typically range from about 2 (one mild signal) to 8-9 (strong,
   // repeated signals across several questions). Revisit these cutoffs if
   // client feedback suggests they're still skewed.
-  if(score <= 2) return '30 minutes';
-  if(score <= 4) return '60 minutes';
-  if(score <= 6) return '90 minutes';
-  return '120 minutes';
+  if(score <= 2) return 30;
+  if(score <= 4) return 60;
+  if(score <= 6) return 90;
+  return 120;
+}
+
+function nearestAvailableDuration(available, target){
+  return available.reduce((a,b)=> Math.abs(b-target) < Math.abs(a-target) ? b : a);
+}
+
+function hrefForSecondary(key){
+  const svc = SERVICES[key];
+  if(!svc) return BOOKING_URL;
+  if(svc.durationLinks){
+    const available = Object.keys(svc.durationLinks).map(Number);
+    const snapped = nearestAvailableDuration(available, 60); // no computed score for a secondary pick, default toward a middle duration
+    return svc.durationLinks[String(snapped)].url;
+  }
+  return svc.bookingUrl || BOOKING_URL;
 }
 
 function renderResult(){
@@ -514,17 +580,34 @@ function renderResult(){
   const pick = pickTherapist(primaryKey);
   const th = pick ? pick.therapist : null;
   const offersFootScrub = pick && ADD_ONS.footScrub && ADD_ONS.footScrub.therapists.includes(pick.key);
-  const bookHref = (pick && svc.therapistBookingUrls && svc.therapistBookingUrls[pick.key]) || svc.bookingUrl || BOOKING_URL;
-  const isMassageType = MASSAGE_KEYS.includes(primaryKey);
-  const durationText = isMassageType ? suggestedDuration(primaryScore) : null;
 
+  // Duration-aware booking: if this service has real per-duration links,
+  // pick the one nearest the suggested duration and book that exact item.
+  let durationText = null;
+  let priceText = null;
+  let durationHref = null;
+  if(svc.durationLinks){
+    const available = Object.keys(svc.durationLinks).map(Number);
+    const target = suggestedDurationMinutes(primaryScore);
+    const snapped = nearestAvailableDuration(available, target);
+    durationText = `${snapped} minutes`;
+    priceText = svc.durationLinks[String(snapped)].price;
+    durationHref = svc.durationLinks[String(snapped)].url;
+  }
+  const bookHref = durationHref || (pick && svc.therapistBookingUrls && svc.therapistBookingUrls[pick.key]) || svc.bookingUrl || BOOKING_URL;
+
+  let addOnNote = '';
+  if(resolvedAddOnTag && ADD_ON_NOTES[resolvedAddOnTag]){
+    addOnNote = `<div class="cadence-line" style="margin-top:6px;">${ADD_ON_NOTES[resolvedAddOnTag]}</div>`;
+  }
   let skinNote = '';
   if(primaryKey === 'facial' && skinTags.length){
     skinNote = `<div class="cadence-line" style="margin-top:6px;">What you shared: ${skinTags.join(', ')}</div>`;
   }
   let pairedNote = '';
-  if(primaryKey === 'salt_chamber' && (scores.lymphatic||0) > 0){
-    pairedNote = `<div class="cadence-line" style="margin-top:6px;">Since you also mentioned swelling or puffiness, pairing this with Manual Lymphatic Drainage is worth asking about too.</div>`;
+  const saltReflexCombo = MORE_SERVICES.find(m => m.label === 'Salt Chamber with Reflexology');
+  if(primaryKey === 'salt_chamber' && saltReflexCombo){
+    pairedNote = `<div class="cadence-line" style="margin-top:6px;">Also ask about the <a href="${saltReflexCombo.bookingUrl}" target="_blank" rel="noopener" style="color:var(--clay-bright);">Salt Chamber with Reflexology</a> combo (${saltReflexCombo.note}).</div>`;
   }
 
   stage.innerHTML = `
@@ -541,14 +624,15 @@ function renderResult(){
         </div>
       </div>` : ''}
       <div class="cadence-line">Suggested rhythm: ${svc.cadence}</div>
-      ${durationText ? `<div class="cadence-line" style="margin-top:6px;">Suggested length: ${durationText}</div>` : ''}
+      ${durationText ? `<div class="cadence-line" style="margin-top:6px;">Suggested length: ${durationText}${priceText ? ` (${priceText})` : ''}</div>` : ''}
+      ${addOnNote}
       ${offersFootScrub ? `<div class="cadence-line" style="margin-top:6px;">Ask about adding a Foot Scrub to your visit with ${th.name}.</div>` : ''}
       ${skinNote}
       ${pairedNote}
       <a class="btn-primary" href="${bookHref}" target="_blank" rel="noopener">Book ${svc.label}${th ? ` with ${th.name}` : ''}</a>
       ${svc.blogUrl ? `<a class="btn-secondary" style="display:block;text-decoration:none;" href="${svc.blogUrl}" target="_blank" rel="noopener">Learn more about ${svc.label}</a>` : ''}
       ${th && th.email ? `<button class="btn-secondary" id="email-therapist-btn">Email this to ${th.name}</button>` : ''}
-      ${secondaryKey ? `<div class="secondary-note">Also worth a look: <strong style="color:var(--cream)">${labelFor(secondaryKey)}</strong>. You mentioned enough there that it's worth mentioning at your visit.</div>` : ''}
+      ${secondaryKey ? `<div class="secondary-note">Also worth a look: <a href="${hrefForSecondary(secondaryKey)}" target="_blank" rel="noopener" style="color:var(--clay-bright);font-weight:600;">${labelFor(secondaryKey)}</a>. You mentioned enough there that it's worth mentioning at your visit.</div>` : ''}
       <button class="link-btn" id="retake-btn" style="margin-top:18px;">Retake the check-in</button>
     </div>
   `;
@@ -569,11 +653,12 @@ function renderResult(){
         body += `\n- ${entry.q}\n  ${entry.a}`;
       });
       body += `\n\nSuggested rhythm: ${svc.cadence}`;
-      if(durationText) body += `\nSuggested length: ${durationText}`;
+      if(durationText) body += `\nSuggested length: ${durationText}${priceText ? ` (${priceText})` : ''}`;
+      if(resolvedAddOnTag && ADD_ON_NOTES[resolvedAddOnTag]) body += `\nNote: ${ADD_ON_NOTES[resolvedAddOnTag]}`;
       if(secondaryKey){
         body += `\nAlso flagged: ${labelFor(secondaryKey)}`;
       }
-      body += `\n\n(Sent from the Balance check-in on the website. The client will book separately.)`;
+      body += `\n\n(Sent from The Companion check-in on the website. The client will book separately.)`;
       window.location.href = `mailto:${th.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
   }
@@ -586,6 +671,48 @@ function updateBookBar(serviceLabel, therapistName){
 }
 
 /* ============ TODAY ============ */
+function renderMoreServices(){
+  const stage = document.getElementById('more-services-stage');
+  if(!stage) return;
+  let html = '';
+  if(GIFT_CARD_URL){
+    html += `
+      <div class="card">
+        <h3>Gift Cards</h3>
+        <p>Buying for someone else, or just want a card on hand?</p>
+        <a class="btn-primary" href="${GIFT_CARD_URL}" target="_blank" rel="noopener">Get a Gift Card</a>
+      </div>
+    `;
+  }
+  MORE_SERVICES.forEach(s=>{
+    html += `
+      <div class="card">
+        <h3>${s.label}</h3>
+        <p>${s.note || ''}</p>
+        <a class="btn-secondary" style="display:block;text-decoration:none;" href="${s.bookingUrl}" target="_blank" rel="noopener">Book ${s.label}</a>
+      </div>
+    `;
+  });
+  if(COMING_SOON){
+    html += `<div class="card" style="opacity:0.8;"><h3>Coming Soon</h3><p>${COMING_SOON}</p></div>`;
+  }
+  stage.innerHTML = html;
+}
+
+function cycleBreathLabel(){
+  const el = document.getElementById('ring-label');
+  if(!el) return;
+  let phase = 0;
+  setInterval(()=>{
+    phase = 1 - phase;
+    el.style.opacity = '0';
+    setTimeout(()=>{
+      el.textContent = phase ? 'breathe out' : 'breathe in';
+      el.style.opacity = '1';
+    }, 300);
+  }, 4000);
+}
+
 function renderNudge(){
   const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(),0,0)) / 86400000);
   const nudge = NUDGES[dayOfYear % NUDGES.length];
@@ -612,12 +739,14 @@ function renderSideRails(){
   if(ok){
     try{
       document.getElementById('book-bar-btn').href = BOOKING_URL;
-      startQuiz();
+      renderGate();
       renderNudge();
       renderSideRails();
+      cycleBreathLabel();
+      renderMoreServices();
     }catch(err){
       document.getElementById('quiz-stage').innerHTML = `<div class="card"><p>Something went wrong setting up the check-in: ${err.message}. Try refreshing the page.</p></div>`;
-      console.error('Balance init failed:', err);
+      console.error('The Companion init failed:', err);
     }
   }
 })();

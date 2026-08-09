@@ -172,7 +172,7 @@ function renderCompare(recommendedKey){
         ${isRec ? '<span class="rec-flag">Suggested for you</span>' : ''}
         <div class="opt-name">${f.name}</div>
         <div class="opt-tagline">${f.tagline}</div>
-        <div class="opt-price">${f.price}</div>
+        <div class="opt-price">${f.price}${f.duration ? ` <span style="font-size:14px;color:var(--sage);">· ${f.duration}</span>` : ''}</div>
         <ul class="steps">${f.steps.map(s=>`<li>${s}</li>`).join('')}</ul>
         <div class="best-for">${f.bestFor}</div>
       </div>
@@ -229,15 +229,16 @@ function renderResult(){
   stage.innerHTML = `
     <div class="card">
       <span class="result-badge">Based on what you shared</span>
-      <div class="result-service">${f.name} — ${f.price}</div>
+      <div class="result-service">${f.name} — ${f.price}${f.duration ? ` (${f.duration})` : ''}</div>
       <p>${f.bestFor}</p>
-      <a class="btn-primary" href="${BOOKING_URL}" target="_blank" rel="noopener">Book the ${f.name} with Alex</a>
+      <a class="btn-primary" href="${f.bookingUrl || BOOKING_URL}" target="_blank" rel="noopener">Book the ${f.name} with Alex</a>
       ${ALEX.email ? `<button class="btn-secondary" id="email-alex-btn">Email Alex about this</button>` : ''}
       <button class="link-btn" id="retake-btn" style="margin-top:16px;">Retake the quiz</button>
     </div>
   `;
   document.getElementById('book-bar-headline').textContent = `Book the ${f.name}`;
-  document.getElementById('book-bar-sub').textContent = `${f.price} with Alex`;
+  document.getElementById('book-bar-sub').textContent = `${f.price}${f.duration ? ` · ${f.duration}` : ''} with Alex`;
+  document.getElementById('book-bar-btn').href = f.bookingUrl || BOOKING_URL;
 
   document.getElementById('retake-btn').addEventListener('click', startQuiz);
   const emailBtn = document.getElementById('email-alex-btn');
