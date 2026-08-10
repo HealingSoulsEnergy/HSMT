@@ -324,6 +324,7 @@ let ADD_ONS = {};
 let MORE_SERVICES = [];
 let GIFT_CARD_URL = '';
 let COMING_SOON = '';
+let FACIALS = {};
 let BOOKING_URL = 'https://www.healingsoulsmt.com';
 
 async function loadData(){
@@ -348,6 +349,7 @@ async function loadData(){
     MORE_SERVICES = data.moreServices || [];
     GIFT_CARD_URL = data.giftCardUrl || '';
     COMING_SOON = data.comingSoon || '';
+    FACIALS = data.facials || {};
     SERVICES = {}; CADENCE_DAYS = {};
     Object.entries(data.services).forEach(([key, s])=>{
       SERVICES[key] = { label:s.label, cadence:s.cadence, therapists:s.therapists || [], blogUrl:s.blogUrl || '', bookingUrl:s.bookingUrl || '', therapistBookingUrls: s.therapistBookingUrls || {}, description: s.description || '', durationLinks: s.durationLinks || null };
@@ -562,6 +564,56 @@ function hrefForSecondary(key){
   return svc.bookingUrl || BOOKING_URL;
 }
 
+function renderFacialResult(secondaryKey){
+  const stage = document.getElementById('quiz-stage');
+  const concernTag = skinTags[0] || '';
+  const facialKey = concernTag.includes('refresh') ? 'basic' : 'customized';
+  const f = FACIALS[facialKey] || FACIALS.customized || FACIALS.basic;
+  if(!f){
+    stage.innerHTML = `<div class="card"><p>Facial details aren't set up yet. Try the general booking link below.</p><a class="btn-primary" href="${BOOKING_URL}" target="_blank" rel="noopener">Book Now</a></div>`;
+    return;
+  }
+  const th = THERAPISTS['alex'];
+  const bookHref = f.bookingUrl || BOOKING_URL;
+
+  stage.innerHTML = `
+    <div class="card">
+      <span class="result-badge">Based on what you shared</span>
+      <div class="result-service">${f.name} — ${f.price}${f.duration ? ` (${f.duration})` : ''}</div>
+      <p>${f.bestFor}</p>
+      ${th ? `
+      <div class="therapist-row">
+        <div class="therapist-initial">${th.initial}</div>
+        <div>
+          <strong>Ask for ${th.name}</strong><br>
+          <span style="color:var(--sage);font-size:13px;">${th.blurb}</span>
+        </div>
+      </div>` : ''}
+      ${skinTags.length ? `<div class="cadence-line" style="margin-top:6px;">What you shared: ${skinTags.join(', ')}</div>` : ''}
+      <a class="btn-primary" href="${bookHref}" target="_blank" rel="noopener">Book the ${f.name}${th ? ` with ${th.name}` : ''}</a>
+      ${th && th.email ? `<button class="btn-secondary" id="email-therapist-btn">Email this to ${th.name}</button>` : ''}
+      ${secondaryKey ? `<div class="secondary-note">Also worth a look: <a href="${hrefForSecondary(secondaryKey)}" target="_blank" rel="noopener" style="color:var(--clay-bright);font-weight:600;">${labelFor(secondaryKey)}</a>. You mentioned enough there that it's worth mentioning at your visit.</div>` : ''}
+      <button class="link-btn" id="retake-btn" style="margin-top:18px;">Retake the check-in</button>
+    </div>
+  `;
+  if(th) updateBookBar(f.name, th.name);
+  document.getElementById('book-bar-btn').href = bookHref;
+
+  document.getElementById('retake-btn').addEventListener('click', startQuiz);
+  const emailBtn = document.getElementById('email-therapist-btn');
+  if(emailBtn && th && th.email){
+    emailBtn.addEventListener('click', ()=>{
+      const subject = `Wellness check-in: ${f.name} recommended`;
+      let body = `Hi ${th.name},\n\nA client just took the Healing Souls wellness check-in and was pointed toward the ${f.name} (${f.price}${f.duration ? `, ${f.duration}` : ''}).\n\nTheir answers:\n`;
+      answersLog.forEach(entry=>{
+        body += `\n- ${entry.q}\n  ${entry.a}`;
+      });
+      body += `\n\n(Sent from The Companion check-in on the website. The client will book separately.)`;
+      window.location.href = `mailto:${th.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  }
+}
+
 function renderResult(){
   const stage = document.getElementById('quiz-stage');
   const ranked = topServices();
@@ -575,6 +627,11 @@ function renderResult(){
   }
   const secondaryRaw = ranked.length>1 && ranked[1][1] >= ranked[0][1]*0.6 ? ranked[1][0] : null;
   const secondaryKey = (secondaryRaw === 'massage' || secondaryRaw === 'lighter') ? null : secondaryRaw;
+
+  if(primaryKey === 'facial'){
+    renderFacialResult(secondaryKey);
+    return;
+  }
 
   const svc = SERVICES[primaryKey];
   const pick = pickTherapist(primaryKey);
@@ -600,10 +657,6 @@ function renderResult(){
   if(resolvedAddOnTag && ADD_ON_NOTES[resolvedAddOnTag]){
     addOnNote = `<div class="cadence-line" style="margin-top:6px;">${ADD_ON_NOTES[resolvedAddOnTag]}</div>`;
   }
-  let skinNote = '';
-  if(primaryKey === 'facial' && skinTags.length){
-    skinNote = `<div class="cadence-line" style="margin-top:6px;">What you shared: ${skinTags.join(', ')}</div>`;
-  }
   let pairedNote = '';
   const saltReflexCombo = MORE_SERVICES.find(m => m.label === 'Salt Chamber with Reflexology');
   if(primaryKey === 'salt_chamber' && saltReflexCombo){
@@ -627,7 +680,6 @@ function renderResult(){
       ${durationText ? `<div class="cadence-line" style="margin-top:6px;">Suggested length: ${durationText}${priceText ? ` (${priceText})` : ''}</div>` : ''}
       ${addOnNote}
       ${offersFootScrub ? `<div class="cadence-line" style="margin-top:6px;">Ask about adding a Foot Scrub to your visit with ${th.name}.</div>` : ''}
-      ${skinNote}
       ${pairedNote}
       <a class="btn-primary" href="${bookHref}" target="_blank" rel="noopener">Book ${svc.label}${th ? ` with ${th.name}` : ''}</a>
       ${svc.blogUrl ? `<a class="btn-secondary" style="display:block;text-decoration:none;" href="${svc.blogUrl}" target="_blank" rel="noopener">Learn more about ${svc.label}</a>` : ''}
@@ -726,7 +778,8 @@ function renderSideRails(){
   const entries = Object.entries(SERVICES).filter(([,s])=>s.description);
   let leftHtml = '', rightHtml = '';
   entries.forEach(([key, s], i)=>{
-    const card = `<div class="rail-card"><h4>${s.label}</h4><p>${s.description}</p></div>${i < entries.length-1 ? '<div class="rail-divider"></div>' : ''}`;
+    const href = hrefForSecondary(key); // same fallback chain: duration link (defaults toward 60 min) -> service link -> general site link
+    const card = `<div class="rail-card"><h4><a href="${href}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--sage-dim);">${s.label}</a></h4><p>${s.description}</p></div>${i < entries.length-1 ? '<div class="rail-divider"></div>' : ''}`;
     if(i % 2 === 0) leftHtml += card; else rightHtml += card;
   });
   leftEl.innerHTML = leftHtml;
