@@ -17,8 +17,7 @@
         { "name": "Sports Massage", "duration_min": 90, "price": 180 },
         { "name": "Therapeutic Massage", "duration_min": 60, "price": 120 },
         { "name": "Therapeutic Massage", "duration_min": 90, "price": 180 },
-        { "name": "Therapeutic Massage", "duration_min": 120, "price": 230 },
-        { "name": "Facial", "duration_min": 90, "price": 125 }
+        { "name": "Therapeutic Massage", "duration_min": 120, "price": 230 }
       ]
     },
     {
@@ -35,8 +34,12 @@
     },
     {
       "category": "Couples Massage",
-      "note": "Not visible in uploaded screenshots — add pricing when available",
-      "services": []
+      "note": null,
+      "services": [
+        { "name": "Couples Massage", "duration_min": 60, "price": 195 },
+        { "name": "Couples Massage", "duration_min": 90, "price": 295 },
+        { "name": "Couples Massage", "duration_min": 120, "price": 395 }
+      ]
     },
     {
       "category": "Manual Lymph Drainage",
@@ -51,7 +54,7 @@
       "category": "Facials",
       "note": null,
       "services": [
-        { "name": "Facial", "duration_min": null, "price": "95+" }
+        { "name": "Customized Facial", "duration_min": 60, "price": 95 }
       ]
     },
     {
@@ -66,6 +69,23 @@
       "category": "Special Offers",
       "note": "Not visible in uploaded screenshots — add details when available",
       "services": []
+    },
+    {
+      "category": "Body Wraps",
+      "note": "With Juliann or Amanda. Wraps: Lumifirm, Crepe No More, Tropicale (Pevonia)",
+      "services": [
+        { "name": "Customized Body Wrap", "duration_min": 90, "price": 120 }
+      ]
+    },
+    {
+      "category": "Sauna",
+      "note": null,
+      "services": [
+        { "name": "Sauna", "duration_min": 30, "price": 35 },
+        { "name": "Sauna with Salt Chamber", "duration_min": 60, "price": 60 },
+        { "name": "Sauna, Salt Chamber & Massage", "duration_min": 120, "price": 150 },
+        { "name": "Sauna, Salt Chamber & Manual Lymph Drainage", "duration_min": 120, "price": 150 }
+      ]
     },
     {
       "category": "Foot Detox",
@@ -93,17 +113,12 @@
     {
       "name": "Juliann",
       "role": "LMT",
-      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Manual Lymphatic Drainage", "Bowen Therapy", "Reiki"]
+      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Manual Lymphatic Drainage", "Bowen Therapy", "Body Wraps", "Reiki"]
     },
     {
       "name": "Amanda",
       "role": "LMT",
-      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Manual Lymphatic Drainage", "Reiki"]
-    },
-    {
-      "name": "Stacie",
-      "role": "LMT",
-      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Foot Scrubs"]
+      "specialties": ["Therapeutic Massage", "Deep Tissue", "Prenatal", "Manual Lymphatic Drainage", "Body Wraps", "Reiki"]
     },
     {
       "name": "Alex",

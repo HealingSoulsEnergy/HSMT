@@ -190,22 +190,22 @@
 
   "facials": {
     "basic": {
-      "name": "Basic Facial",
-      "price": "$95+",
+      "name": "Customized Facial",
+      "price": "$95",
       "duration": "60 min",
-      "tagline": "A clean, classic reset for your skin.",
-      "steps": ["Cleanse", "Enzyme exfoliation", "Facial massage", "Facial mask"],
-      "bestFor": "A straightforward, relaxing facial that covers the essentials well. Great if you're not chasing a specific problem, just want your skin (and you) to feel refreshed.",
+      "tagline": "A relaxing reset, tailored to your skin.",
+      "steps": ["Cleanse", "Enzyme exfoliation", "Facial massage", "Pevonia serums and mask matched to your skin"],
+      "bestFor": "Perfect if you're not chasing a specific problem and just want your skin (and you) to feel refreshed. Alex still tailors every step to what your skin needs that day.",
       "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=27"
     },
     "customized": {
       "name": "Customized Facial",
-      "price": "$125",
-      "duration": "90 min",
+      "price": "$95",
+      "duration": "60 min",
       "tagline": "Built around what your skin actually needs.",
-      "steps": ["Cleanse", "Enzyme exfoliation", "Facial massage", "Concentrated Pevonia ampules matched to your skin", "Upgraded mask or peel"],
+      "steps": ["Cleanse", "Enzyme exfoliation", "Facial massage", "Concentrated Pevonia ampules matched to your skin", "Pevonia mask chosen for your concern"],
       "bestFor": "Best when you have something specific you're trying to address, like acne, aging, dullness, sensitivity, or hyperpigmentation. Alex mixes and matches Pevonia's line to target it directly.",
-      "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=36"
+      "bookingUrl": "https://booking.mangomint.com/healingsouls?serviceId=27"
     }
   },
 
