@@ -100,14 +100,14 @@
 <div class="wrap">
   <div class="hero">
     <span class="eyebrow">Skincare with Alex</span>
-    <h1>Basic, or <em>customized?</em></h1>
-    <p>Both facials at Healing Souls start the same way. Here's how they're different, and a quick way to see which one fits what your skin needs right now.</p>
+    <h1>Your <em>customized</em> facial</h1>
+    <p>Every facial at Healing Souls is customized by Alex, a Pevonia Skincare Educator: 60 minutes, $95. Take the quick quiz below so Alex knows what your skin needs before you arrive.</p>
   </div>
 
   <div id="compare-wrap"></div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="quiz">Not Sure? Take the Quiz</button>
+    <button class="tab active" data-tab="quiz">Tell Us About Your Skin</button>
   </div>
 
   <section class="panel active" id="panel-quiz">
@@ -162,7 +162,8 @@ async function loadData(){
 
 function renderCompare(recommendedKey){
   const wrap = document.getElementById('compare-wrap');
-  const order = ['basic','customized'];
+  const order = ['customized'];
+  recommendedKey = null;
   wrap.innerHTML = `<div class="compare">${order.map(key=>{
     const f = FACIALS[key];
     if(!f) return '';
@@ -245,7 +246,7 @@ function renderResult(){
   if(emailBtn){
     emailBtn.addEventListener('click', ()=>{
       const subject = `Facial recommendation: ${f.name}`;
-      const body = `Hi Alex,\n\nA client took the facial comparison quiz on the website and was pointed toward the ${f.name} (${f.price}).\n\n(Sent from the Healing Souls website. The client will book separately.)`;
+      const body = `Hi Alex,\n\nA client took the facial quiz on the website and was pointed toward the ${f.name} (${f.price}).\n\n(Sent from the Healing Souls website. The client will book separately.)`;
       window.location.href = `mailto:${ALEX.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
   }
